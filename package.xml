@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<package xmlns="https://wiki.freecad.org/Package_Metadata" format="1">
+  <name>Aquarium</name>
+  <description>Tool to generate a parametric drawing for a peninsula aquarium</description>
+  <version>1.0.0</version>
+  <maintainer email="marinheiro@doalem.com">Marinheiro do Alem</maintainer>
+  <license file="LICENSE">LGPL-2.1</license>
+  <url type="repository" branch="release">https://github.com/MarinheirodoAlem/freecad_aquarium</url>
+  <url type="readme">https://github.com/MarinheirodoAlem/freecad_aquarium/blob/release/README.md</url>
+  <url type="bugtracker">https://github.com/MarinheirodoAlem/freecad_aquarium/issues</url>
+  <icon>icon/aquarium.svg</icon>
+  <content>
+    <workbench>
+      <classname>AquariumWorkbench</classname>
+      <subdirectory>./</subdirectory>
+    </workbench>
+  </content>
+</package>
