@@ -43,7 +43,11 @@ def make_panel(doc, grp, name, px, py, pz, l, w, h):
     return g
 
 def make_fastener(doc, baseOrPanel, grp, name, x, y, direction, upcorner=False):
-    if direction==0:
+    if baseOrPanel:
+        screwBase = 'Config.PanelMountThickness'
+        if direction <= 3:
+            screwBase += '+Config.PanelMountThickness*10'
+    elif direction==0:
         y+='+Config.PanelMountInset'
     elif direction==1:
         x+='-Config.PanelMountInset'
@@ -96,11 +100,29 @@ def make_fastener(doc, baseOrPanel, grp, name, x, y, direction, upcorner=False):
         b.Visibility = False
         grp.addObject(b)
         chamfsize = 10
-        edges = list(map(lambda x: (x, chamfsize, chamfsize), [6, 8]))
-        c = doc.addObject('Part::Chamfer', f'{name}Chamfered')
+        edges = list(map(lambda x: (x, chamfsize, chamfsize), [2, 4, 6, 8]))
+        c = doc.addObject('Part::Chamfer', f'{name}ChamferedPanel')
         c.Base = b
         c.Edges = edges
         grp.addObject(c)
+        screw = doc.addObject('Part::Cylinder', f'{name}IndexScrew')
+        screwrot = Rotation(Vector(1,0,0), 90)
+        screwcenter = screw.Placement.Base
+        screw.Placement = Placement(screwcenter, screwrot)
+        screw.setExpression('.Placement.Base.x', 'Config.PanelMountHoleBorderSpacing')
+        screw.setExpression('.Placement.Base.y', screwBase)
+        screw.setExpression('.Placement.Base.z', 'Config.PanelMountHoleBorderSpacing')
+        screw.setExpression('Radius', 'Config.PanelMountHoleDiameter/2')
+        screw.setExpression('Height', 'Config.PanelMountThickness*10')
+        grp.addObject(screw)
+        screws = Draft.make_ortho_array(screw, v_x=App.Vector(10, 0, 0), v_y=App.Vector(0, 10, 0), v_z=App.Vector(0, 0, 10), n_x=1, n_y=1, n_z=1, use_link=False)
+        screws.setExpression('.IntervalX.x', 'Config.PanelMountHoleSpacing')
+        screws.setExpression('.IntervalZ.z', 'Config.PanelMountHoleSpacing')
+        screws.setExpression('NumberZ', 'Config.PanelMountHoleCountVertical')
+        screws.setExpression('NumberX', 'Config.PanelMountHoleCountHorizontal')
+        base.addObject(c)
+        base.addObject(screws)
+        #grp.addObject(screws)
     else:
         b = doc.addObject('Part::Box', f'{name}Square')
         b.setExpression('Length', 'Computed.PanelFastenerSizeHorizontal')
@@ -149,8 +171,12 @@ def make_supports(doc, baseOrPanel, grp_sup, name):
     make_fasteners(doc, baseOrPanel, grp_sup, name, 'Computed.RightCornerX', 'Computed.FrontCornerY', 1)
     make_fasteners(doc, baseOrPanel, grp_sup, name, 'Computed.RightCornerX', 'Computed.BackCornerY', 2)
     make_fasteners(doc, baseOrPanel, grp_sup, name, 'Computed.LeftCornerX', 'Computed.BackCornerY', 3)
-    make_fasteners(doc, baseOrPanel, grp_sup, name, 'Computed.LeftCornerX', 'Computed.BackCornerY-Config.PanelMountThickness', 4)
-    make_fasteners(doc, baseOrPanel, grp_sup, name, 'Computed.LeftCornerX+Config.PanelMountThickness', 'Computed.FrontCornerY', 5)
-    make_fasteners(doc, baseOrPanel, grp_sup, name, 'Computed.RightCornerX', 'Computed.FrontCornerY+Config.PanelMountThickness', 6)
-    make_fasteners(doc, baseOrPanel, grp_sup, name, 'Computed.RightCornerX-Config.PanelMountThickness', 'Computed.BackCornerY', 7)
+    if baseOrPanel:
+        pt = 'Config.PanelBlockThickness'
+    else:
+        pt = 'Config.PanelMountThickness'
+    make_fasteners(doc, baseOrPanel, grp_sup, name, 'Computed.LeftCornerX', f'Computed.BackCornerY-{pt}', 4)
+    make_fasteners(doc, baseOrPanel, grp_sup, name, f'Computed.LeftCornerX+{pt}', 'Computed.FrontCornerY', 5)
+    make_fasteners(doc, baseOrPanel, grp_sup, name, 'Computed.RightCornerX', f'Computed.FrontCornerY+{pt}', 6)
+    make_fasteners(doc, baseOrPanel, grp_sup, name, f'Computed.RightCornerX-{pt}', 'Computed.BackCornerY', 7)
 

@@ -53,6 +53,7 @@ def make_stand_cover(doc):
     mkpc(doc,g,'RightStandCover','Computed.RightCornerX','Computed.FrontCornerY', z_b, 'Config.PanelThickness','Config.Length+Config.PanelThickness',h)
     mkpc(doc,g,'BackStandCover','Computed.LeftCornerX','Computed.BackCornerY', z_b, 'Config.Width','Config.PanelThickness',h)
     mkpc(doc,g,'FrontStandCover','Computed.LeftCornerX-Config.PanelThickness','Computed.FrontCornerY-Config.PanelThickness', z_b, 'Config.Width+2*Config.PanelThickness','Config.PanelThickness',h)
+    make_supports(doc, True, g, 'ScrewBlock')
     return g
 
 def make_canopy_cover(doc):
@@ -63,5 +64,4 @@ def make_canopy_cover(doc):
     mkpc(doc,g,'RightCanopyCover','Computed.RightCornerX','Computed.FrontCornerY', z_b, 'Config.PanelThickness','Config.Length+Config.PanelThickness',h)
     mkpc(doc,g,'BackCanopyCover','Computed.LeftCornerX','Computed.BackCornerY', z_b, 'Config.Width','Config.PanelThickness',h)
     mkpc(doc,g,'FrontCanopyCover','Computed.LeftCornerX-Config.PanelThickness','Computed.FrontCornerY-Config.PanelThickness', z_b, 'Config.Width+2*Config.PanelThickness','Config.PanelThickness',h)
-    make_supports(doc, True, g, 'ScrewBlock')
     return g
