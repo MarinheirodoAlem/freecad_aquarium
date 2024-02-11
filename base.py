@@ -32,7 +32,7 @@ from holes import getHole
 def make_leveling_base(doc):
     grp = doc.addObject('App::DocumentObjectGroup', 'LevelingBase')
     grp.Label = 'LevelingBase'
-    b = make_panel(doc, grp, 'BottomBase', 'Computed.LeftCornerX', '-Config.Length/2', 'Computed.UnderGlassBaseLevel', 'Config.Width', 'Config.Length', 'Config.UnderGlassLevelingBaseThickness')
+    b = make_panel(doc, grp, 'BottomBase', 'Computed.LeftCornerX', '-Computed.Length/2', 'Computed.UnderGlassBaseLevel', 'Computed.Width', 'Computed.Length', 'Config.UnderGlassLevelingBaseThickness')
     base = doc.addObject("Part::Cut", "BaseDrilled")
     base.Base = b
     base.Tool = getHole(doc, 'Base')

@@ -33,7 +33,7 @@ def create_weir(doc):
     Weir = doc.addObject('PartDesign::Body', 'Weir')
     Weir.Group = []
     Weir.setExpression('.Placement.Base.x', 'Computed.LeftCornerX')
-    Weir.setExpression('.Placement.Base.y', 'Config.Length/2-Config.SidesGlassThickness-Computed.WeirDepth')
+    Weir.setExpression('.Placement.Base.y', 'Computed.Length/2-Config.SidesGlassThickness-Computed.WeirDepth')
     Weir.setExpression('.Placement.Base.z', '(Computed.GlassLevel+Config.BottomGlassThickness)*1 mm')
     main_face_profile = doc.addObject('Sketcher::SketchObject', 'main_face_profile')
     b = main_face_profile.addGeometry(Part.LineSegment(Vector (100.0, 0.0, 0.0), Vector (700.0, 0.0, 0.0)))

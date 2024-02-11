@@ -52,7 +52,7 @@ def make_glass(doc, cut45 = False):
     grp_bp = doc.addObject('App::DocumentObjectGroup','BottomGlass')
     grp.addObject(grp_bp)
     grp.Label = 'Glasses'
-    bg = make_panel(doc, None, 'BottomGlass','Computed.LeftCornerX','-Config.Length/2','Computed.GlassLevel','Config.Width','Config.Length','Config.BottomGlassThickness')
+    bg = make_panel(doc, None, 'BottomGlass','Computed.LeftCornerX','-Computed.Length/2','Computed.GlassLevel','Computed.Width','Computed.Length','Config.BottomGlassThickness')
     bbd = doc.addObject("Part::Cut", "BottomGlassDrilled")
     bbd.Base = bg
     holes_glass = getHole(doc, 'Glass')
@@ -66,19 +66,19 @@ def make_glass(doc, cut45 = False):
     grp_gs = doc.addObject('App::DocumentObjectGroup','SidesGlass')
     grp.addObject(grp_gs)
     if cut45:
-        left = make_panel(doc, None, 'LeftGlass','Computed.LeftCornerX','Config.Length/-2', z_b, 'Config.SidesGlassThickness','Config.Length','Computed.RealGlassHeight')
-        grp_gs.addObject(cut_glass(left, 'LeftGlass', 'Computed.LeftCornerX','Config.Length/2', z_b, 'Config.Length', -45))
-        right = make_panel(doc, None, 'RightGlass','Computed.RightCornerX-Config.SidesGlassThickness','Config.Length/-2', z_b, 'Config.SidesGlassThickness','Config.Length','Computed.RealGlassHeight')
-        grp_gs.addObject(cut_glass(right, 'RightGlass', 'Computed.RightCornerX','Config.Length/2', z_b, 'Config.Length', -45))
-        back = make_panel(doc, None, 'BackGlass','Computed.LeftCornerX','Config.Length/2-Config.SidesGlassThickness', z_b, 'Config.Width','Config.SidesGlassThickness','Computed.RealGlassHeight')
-        grp_gs.addObject(cut_glass(back, 'BackGlass', 'Computed.LeftCornerX','Config.Length/2', z_b, 'Config.Width', 45))
-        front = make_panel(doc, None, 'FrontGlass','Computed.LeftCornerX','-Config.Length/2', z_b, 'Config.Width','Config.SidesGlassThickness','Computed.RealGlassHeight')
-        grp_gs.addObject(cut_glass(front, 'FrontGlass', 'Computed.LeftCornerX','-Config.Length/2', z_b, 'Config.Width', 45))
+        left = make_panel(doc, None, 'LeftGlass','Computed.LeftCornerX','Computed.Length/-2', z_b, 'Config.SidesGlassThickness','Computed.Length','Computed.RealGlassHeight')
+        grp_gs.addObject(cut_glass(left, 'LeftGlass', 'Computed.LeftCornerX','Computed.Length/2', z_b, 'Computed.Length', -45))
+        right = make_panel(doc, None, 'RightGlass','Computed.RightCornerX-Config.SidesGlassThickness','Computed.Length/-2', z_b, 'Config.SidesGlassThickness','Computed.Length','Computed.RealGlassHeight')
+        grp_gs.addObject(cut_glass(right, 'RightGlass', 'Computed.RightCornerX','Computed.Length/2', z_b, 'Computed.Length', -45))
+        back = make_panel(doc, None, 'BackGlass','Computed.LeftCornerX','Computed.Length/2-Config.SidesGlassThickness', z_b, 'Computed.Width','Config.SidesGlassThickness','Computed.RealGlassHeight')
+        grp_gs.addObject(cut_glass(back, 'BackGlass', 'Computed.LeftCornerX','Computed.Length/2', z_b, 'Computed.Width', 45))
+        front = make_panel(doc, None, 'FrontGlass','Computed.LeftCornerX','-Computed.Length/2', z_b, 'Computed.Width','Config.SidesGlassThickness','Computed.RealGlassHeight')
+        grp_gs.addObject(cut_glass(front, 'FrontGlass', 'Computed.LeftCornerX','-Computed.Length/2', z_b, 'Computed.Width', 45))
     else:
-        make_panel(doc, grp_gs, 'LeftGlass','Computed.LeftCornerX','Config.Length/-2+Config.SidesGlassThickness', z_b, 'Config.SidesGlassThickness','Config.Length-2*Config.SidesGlassThickness','Computed.RealGlassHeight')
-        make_panel(doc, grp_gs, 'RightGlass','Computed.RightCornerX-Config.SidesGlassThickness','Config.Length/-2+Config.SidesGlassThickness', z_b, 'Config.SidesGlassThickness','Config.Length-2*Config.SidesGlassThickness','Computed.RealGlassHeight')
-        make_panel(doc, grp_gs, 'BackGlass','Computed.LeftCornerX','Config.Length/2-Config.SidesGlassThickness', z_b, 'Config.Width','Config.SidesGlassThickness','Computed.RealGlassHeight')
-        make_panel(doc, grp_gs, 'FrontGlass','Computed.LeftCornerX','-Config.Length/2', z_b, 'Config.Width','Config.SidesGlassThickness','Computed.RealGlassHeight')
+        make_panel(doc, grp_gs, 'LeftGlass','Computed.LeftCornerX','Computed.Length/-2+Config.SidesGlassThickness', z_b, 'Config.SidesGlassThickness','Computed.Length-2*Config.SidesGlassThickness','Computed.RealGlassHeight')
+        make_panel(doc, grp_gs, 'RightGlass','Computed.RightCornerX-Config.SidesGlassThickness','Computed.Length/-2+Config.SidesGlassThickness', z_b, 'Config.SidesGlassThickness','Computed.Length-2*Config.SidesGlassThickness','Computed.RealGlassHeight')
+        make_panel(doc, grp_gs, 'BackGlass','Computed.LeftCornerX','Computed.Length/2-Config.SidesGlassThickness', z_b, 'Computed.Width','Config.SidesGlassThickness','Computed.RealGlassHeight')
+        make_panel(doc, grp_gs, 'FrontGlass','Computed.LeftCornerX','-Computed.Length/2', z_b, 'Computed.Width','Config.SidesGlassThickness','Computed.RealGlassHeight')
 
     # Euro bracing
     eb = doc.addObject('App::DocumentObjectGroup','GlassBraces')
@@ -87,24 +87,24 @@ def make_glass(doc, cut45 = False):
     ebb = doc.addObject('App::DocumentObjectGroup','GlassBracesBottom')
     ebb.Label = 'EuroBraces Bottom'
     eb.addObject(ebb)
-    make_panel(doc, ebb, 'LeftBottomBrace','Computed.LeftCornerX+Config.SidesGlassThickness','Config.Length/-2+Config.SidesGlassThickness', z_b, 'Config.BraceWidth','Config.Length-2*Config.SidesGlassThickness','Config.SidesGlassThickness')
-    make_panel(doc, ebb, 'RightBottomBrace','Computed.RightCornerX-Config.BraceWidth-Config.SidesGlassThickness','Config.Length/-2+Config.SidesGlassThickness', z_b, 'Config.BraceWidth','Config.Length-2*Config.SidesGlassThickness','Config.SidesGlassThickness')
-    make_panel(doc, ebb, 'FrontBottomBrace','Computed.LeftCornerX+Config.SidesGlassThickness+Config.BraceWidth','-Config.Length/2+Config.SidesGlassThickness', z_b, 'Config.Width-2*Config.BraceWidth-2*Config.SidesGlassThickness','Config.BraceWidth','Config.SidesGlassThickness')
-    bbb = make_panel(doc, ebb, 'BackBottomBrace','Computed.LeftCornerX+2*Config.SidesGlassThickness+Config.BraceWidth','Config.Length/2-2*Config.SidesGlassThickness', z_b, 'Config.Width-2*Config.BraceWidth-4*Config.SidesGlassThickness','Config.SidesGlassThickness','Config.BraceWidth')
-    bbbsup = make_panel(doc, ebb, 'BackBottomWeirSupport','Computed.LeftCornerX+2*Config.SidesGlassThickness+Config.BraceWidth','Config.Length/2-Config.SidesGlassThickness-Computed.WeirDepth', z_b, 'Config.Width-2*Config.BraceWidth-4*Config.SidesGlassThickness','Config.SidesGlassThickness','Config.BraceWidth')
+    make_panel(doc, ebb, 'LeftBottomBrace','Computed.LeftCornerX+Config.SidesGlassThickness','Computed.Length/-2+Config.SidesGlassThickness', z_b, 'Config.BraceWidth','Computed.Length-2*Config.SidesGlassThickness','Config.SidesGlassThickness')
+    make_panel(doc, ebb, 'RightBottomBrace','Computed.RightCornerX-Config.BraceWidth-Config.SidesGlassThickness','Computed.Length/-2+Config.SidesGlassThickness', z_b, 'Config.BraceWidth','Computed.Length-2*Config.SidesGlassThickness','Config.SidesGlassThickness')
+    make_panel(doc, ebb, 'FrontBottomBrace','Computed.LeftCornerX+Config.SidesGlassThickness+Config.BraceWidth','-Computed.Length/2+Config.SidesGlassThickness', z_b, 'Computed.Width-2*Config.BraceWidth-2*Config.SidesGlassThickness','Config.BraceWidth','Config.SidesGlassThickness')
+    bbb = make_panel(doc, ebb, 'BackBottomBrace','Computed.LeftCornerX+2*Config.SidesGlassThickness+Config.BraceWidth','Computed.Length/2-2*Config.SidesGlassThickness', z_b, 'Computed.Width-2*Config.BraceWidth-4*Config.SidesGlassThickness','Config.SidesGlassThickness','Config.BraceWidth')
+    bbbsup = make_panel(doc, ebb, 'BackBottomWeirSupport','Computed.LeftCornerX+2*Config.SidesGlassThickness+Config.BraceWidth','Computed.Length/2-Config.SidesGlassThickness-Computed.WeirDepth', z_b, 'Computed.Width-2*Config.BraceWidth-4*Config.SidesGlassThickness','Config.SidesGlassThickness','Config.BraceWidth')
 
     ebt = doc.addObject('App::DocumentObjectGroup','GlassBracesTop')
     ebt.Label = 'EuroBraces Top'
     eb.addObject(ebt)
     top_1 = z_t+'- Config.SidesGlassThickness'
     top_2 = z_t+'- 2*Config.SidesGlassThickness'
-    make_panel(doc, ebt, 'LeftTopBrace','Computed.LeftCornerX+Config.SidesGlassThickness','Config.Length/-2+Config.SidesGlassThickness', top_2, 'Config.BraceWidth','Config.Length-2*Config.SidesGlassThickness','Config.SidesGlassThickness')
-    make_panel(doc, ebt, 'RightTopBrace','Computed.RightCornerX-Config.BraceWidth-Config.SidesGlassThickness','Config.Length/-2+Config.SidesGlassThickness', top_2, 'Config.BraceWidth','Config.Length-2*Config.SidesGlassThickness','Config.SidesGlassThickness')
-    make_panel(doc, ebt, 'FrontTopBrace','Computed.LeftCornerX+Config.SidesGlassThickness','-Config.Length/2+Config.SidesGlassThickness', top_1, 'Config.Width-2*Config.SidesGlassThickness','Config.BraceWidth','Config.SidesGlassThickness')
-    make_panel(doc, ebt, 'BackTopBrace','Computed.LeftCornerX+Config.SidesGlassThickness','Config.Length/2-Config.SidesGlassThickness -Computed.WeirDepth', top_1, 'Config.Width-2*Config.SidesGlassThickness','Computed.WeirDepth','Config.SidesGlassThickness')
+    make_panel(doc, ebt, 'LeftTopBrace','Computed.LeftCornerX+Config.SidesGlassThickness','Computed.Length/-2+Config.SidesGlassThickness', top_2, 'Config.BraceWidth','Computed.Length-2*Config.SidesGlassThickness','Config.SidesGlassThickness')
+    make_panel(doc, ebt, 'RightTopBrace','Computed.RightCornerX-Config.BraceWidth-Config.SidesGlassThickness','Computed.Length/-2+Config.SidesGlassThickness', top_2, 'Config.BraceWidth','Computed.Length-2*Config.SidesGlassThickness','Config.SidesGlassThickness')
+    make_panel(doc, ebt, 'FrontTopBrace','Computed.LeftCornerX+Config.SidesGlassThickness','-Computed.Length/2+Config.SidesGlassThickness', top_1, 'Computed.Width-2*Config.SidesGlassThickness','Config.BraceWidth','Config.SidesGlassThickness')
+    make_panel(doc, ebt, 'BackTopBrace','Computed.LeftCornerX+Config.SidesGlassThickness','Computed.Length/2-Config.SidesGlassThickness -Computed.WeirDepth', top_1, 'Computed.Width-2*Config.SidesGlassThickness','Computed.WeirDepth','Config.SidesGlassThickness')
     gwf = doc.addObject('App::DocumentObjectGroup','GlassBracesWeirFrame')
     gwf.Label = 'Weir Frame'
     eb.addObject(gwf)
-    make_panel(doc, gwf, 'WeirFrameLeftBrace','Computed.LeftCornerX+Config.SidesGlassThickness+Config.BraceWidth','Config.Length/2-Config.SidesGlassThickness -Computed.WeirDepth', z_b,'Config.SidesGlassThickness','Computed.WeirDepth','Computed.RealGlassHeight-Config.SidesGlassThickness')
-    make_panel(doc, gwf, 'WeirFrameRightBrace','Computed.RightCornerX-2*Config.SidesGlassThickness-Config.BraceWidth','Config.Length/2-Config.SidesGlassThickness -Computed.WeirDepth', z_b,'Config.SidesGlassThickness','Computed.WeirDepth','Computed.RealGlassHeight-Config.SidesGlassThickness')
+    make_panel(doc, gwf, 'WeirFrameLeftBrace','Computed.LeftCornerX+Config.SidesGlassThickness+Config.BraceWidth','Computed.Length/2-Config.SidesGlassThickness -Computed.WeirDepth', z_b,'Config.SidesGlassThickness','Computed.WeirDepth','Computed.RealGlassHeight-Config.SidesGlassThickness')
+    make_panel(doc, gwf, 'WeirFrameRightBrace','Computed.RightCornerX-2*Config.SidesGlassThickness-Config.BraceWidth','Computed.Length/2-Config.SidesGlassThickness -Computed.WeirDepth', z_b,'Config.SidesGlassThickness','Computed.WeirDepth','Computed.RealGlassHeight-Config.SidesGlassThickness')
     return grp

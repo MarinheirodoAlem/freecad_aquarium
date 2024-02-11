@@ -49,10 +49,10 @@ def make_stand_cover(doc):
     z_b = 'Config.Panel2FloorSpace'
     h = f'Config.StandVisibleHeight-{z_b}'
     g = doc.addObject('App::DocumentObjectGroup','StandPanels')
-    mkpc(doc,g,'LeftStandCover','Computed.LeftCornerX-Config.PanelThickness','Computed.FrontCornerY', z_b, 'Config.PanelThickness','Config.Length+Config.PanelThickness',h)
-    mkpc(doc,g,'RightStandCover','Computed.RightCornerX','Computed.FrontCornerY', z_b, 'Config.PanelThickness','Config.Length+Config.PanelThickness',h)
-    mkpc(doc,g,'BackStandCover','Computed.LeftCornerX','Computed.BackCornerY', z_b, 'Config.Width','Config.PanelThickness',h)
-    mkpc(doc,g,'FrontStandCover','Computed.LeftCornerX-Config.PanelThickness','Computed.FrontCornerY-Config.PanelThickness', z_b, 'Config.Width+2*Config.PanelThickness','Config.PanelThickness',h)
+    mkpc(doc,g,'LeftStandCover','Computed.LeftCornerX-Config.PanelThickness','Computed.FrontCornerY', z_b, 'Config.PanelThickness','Computed.Length+Config.PanelThickness',h)
+    mkpc(doc,g,'RightStandCover','Computed.RightCornerX','Computed.FrontCornerY', z_b, 'Config.PanelThickness','Computed.Length+Config.PanelThickness',h)
+    mkpc(doc,g,'BackStandCover','Computed.LeftCornerX','Computed.BackCornerY', z_b, 'Computed.Width','Config.PanelThickness',h)
+    mkpc(doc,g,'FrontStandCover','Computed.LeftCornerX-Config.PanelThickness','Computed.FrontCornerY-Config.PanelThickness', z_b, 'Computed.Width+2*Config.PanelThickness','Config.PanelThickness',h)
     make_supports(doc, True, g, 'ScrewBlock')
     return g
 
@@ -60,8 +60,8 @@ def make_canopy_cover(doc):
     z_b = 'Computed.CanopyPanelLevel'
     h = 'Computed.CanopyPanelHeight'
     g = doc.addObject('App::DocumentObjectGroup','CanopyPanels')
-    mkpc(doc,g,'LeftCanopyCover','Computed.LeftCornerX-Config.PanelThickness','Computed.FrontCornerY', z_b, 'Config.PanelThickness','Config.Length+Config.PanelThickness',h)
-    mkpc(doc,g,'RightCanopyCover','Computed.RightCornerX','Computed.FrontCornerY', z_b, 'Config.PanelThickness','Config.Length+Config.PanelThickness',h)
-    mkpc(doc,g,'BackCanopyCover','Computed.LeftCornerX','Computed.BackCornerY', z_b, 'Config.Width','Config.PanelThickness',h)
-    mkpc(doc,g,'FrontCanopyCover','Computed.LeftCornerX-Config.PanelThickness','Computed.FrontCornerY-Config.PanelThickness', z_b, 'Config.Width+2*Config.PanelThickness','Config.PanelThickness',h)
+    mkpc(doc,g,'LeftCanopyCover','Computed.LeftCornerX-Config.PanelThickness','Computed.FrontCornerY', z_b, 'Config.PanelThickness','Computed.Length+Config.PanelThickness',h)
+    mkpc(doc,g,'RightCanopyCover','Computed.RightCornerX','Computed.FrontCornerY', z_b, 'Config.PanelThickness','Computed.Length+Config.PanelThickness',h)
+    mkpc(doc,g,'BackCanopyCover','Computed.LeftCornerX','Computed.BackCornerY', z_b, 'Computed.Width','Config.PanelThickness',h)
+    mkpc(doc,g,'FrontCanopyCover','Computed.LeftCornerX-Config.PanelThickness','Computed.FrontCornerY-Config.PanelThickness', z_b, 'Computed.Width+2*Config.PanelThickness','Config.PanelThickness',h)
     return g
