@@ -150,3 +150,41 @@ def make_nozzles(doc):
     holes_base = create_array(doc, hole_base)
     drill(doc, 'Base', holes_base)
     return grp
+
+def make_water(doc):
+    grp = doc.addObject('App::DocumentObjectGroup','Water')
+    waterMain = doc.addObject('Part::Box', 'WaterDisplayExtra')
+    waterMain.setExpression('Length', 'Computed.Width - 2 * Config.SidesGlassThickness')
+    waterMain.setExpression('Width', 'Computed.Length - 2 * Config.SidesGlassThickness')
+    waterMain.setExpression('Height', 'Config.WaterHeightWeir')
+    waterMain.setExpression('.Placement.Base.x', 'Computed.LeftCornerX + Config.SidesGlassThickness')
+    waterMain.setExpression('.Placement.Base.y', 'Computed.Length / -2 + Config.SidesGlassThickness')
+    waterMain.setExpression('.Placement.Base.z', 'Computed.GlassLevel + Config.BottomGlassThickness')
+    waterWeirCut = doc.addObject('Part::Box', 'waterWeirCut')
+    waterWeirCut.setExpression('Length', 'Computed.Width - 2 * Config.BraceWidth - 2 * Config.SidesGlassThickness')
+    waterWeirCut.setExpression('Width', 'Computed.WeirDepth')
+    waterWeirCut.setExpression('Height', 'Computed.RealGlassHeight + Config.StandVisibleHeight')
+    waterWeirCut.setExpression('.Placement.Base.x', 'Computed.LeftCornerX + Config.SidesGlassThickness + Config.BraceWidth')
+    waterWeirCut.setExpression('.Placement.Base.y', 'Computed.Length / 2 - Config.SidesGlassThickness - Computed.WeirDepth')
+    waterMain.ViewObject.Transparency=80
+    waterMain.ViewObject.ShapeColor=(2.0/3.0, 1.0, 1.0, 1.0)
+    waterWeirCut.ViewObject.ShapeColor=(2.0/3.0, 1.0, 1.0, 1.0)
+    waterWeirCut.ViewObject.Transparency=100
+    water = doc.addObject("Part::Cut", 'WaterDisplay')
+    water.Base = waterMain
+    water.Tool = waterWeirCut
+    grp.addObject(water)
+    def make_level(doc, name, color, base, top):
+        water = doc.addObject('Part::Box', f'Water{name}')
+        water.setExpression('Length', 'Computed.Width - 2 * Config.BraceWidth - 2 * Config.SidesGlassThickness')
+        water.setExpression('Width', 'Computed.WeirDepth')
+        water.setExpression('Height', f'({top})-({base})')
+        water.setExpression('.Placement.Base.x', 'Computed.LeftCornerX + Config.SidesGlassThickness + Config.BraceWidth')
+        water.setExpression('.Placement.Base.y', 'Computed.Length / 2 - Config.SidesGlassThickness - Computed.WeirDepth')
+        water.setExpression('.Placement.Base.z', f'Computed.GlassLevel + Config.BottomGlassThickness+{base}')
+        water.ViewObject.Transparency=80
+        water.ViewObject.ShapeColor=color
+        grp.addObject(water)
+    make_level(doc, "BeanAnimalMainDrainLevel", (0.0, 1.0, 0.0, 1.0), 0, 'Config.BeanAnimalMainDrainLevel')
+    make_level(doc, "BeanAnimalAuxiliaryDrainLevel", (1.0, 1.0, 0.0, 1.0), 'Config.BeanAnimalMainDrainLevel', 'Config.BeanAnimalAuxiliaryDrainLevel')
+    make_level(doc, "BeanAnimalEmergencyDrainLevel", (1.0, 0.0, 0.0, 1.0), 'Config.BeanAnimalAuxiliaryDrainLevel', 'Config.BeanAnimalEmergencyDrainLevel')

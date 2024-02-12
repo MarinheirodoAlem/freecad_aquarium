@@ -205,7 +205,7 @@ def DefaultsConfig(categories):
     defcon.addNum('BeanAnimalMainDrainLevel', 450, 20, 2000, 10, 'Water level of the main pipe from Bean Animal style drain', mm, 'weir', 'plumbing')
     defcon.addNum('BeanAnimalAuxiliaryDrainLevel', 580, 20, 2000, 10, 'Level in the weir that water start to flow into the auxiliary pipe from Bean Animal style drain', mm, 'weir', 'plumbing')
     defcon.addNum('BeanAnimalEmergencyDrainLevel', 600, 20, 2000, 10, 'Level in the weir that water start to flow into the emergency pipe from Bean Animal style drain', mm, 'weir', 'plumbing')
-    defcon.addNum('ReturnWaterLevel', 390, 20, 2000, 10, 'Level in the weir that the return line keeps water in order to avoid siphoning the aquarium water to the sump when the pump is off', mm, 'weir', 'plumbing')
+    defcon.addNum('ReturnWaterLevel', 500, 20, 2000, 10, 'Level in the weir that the return line keeps water in order to avoid siphoning the aquarium water to the sump when the pump is off', mm, 'weir', 'plumbing')
     defcon.addNum('NozzlesEveryXBeamSpace', 1, 1, 10, 1, 'Put a nozzle every number of spaces (1->each beam space, 2->one nozzle one empty space, 3->one nozzle two spaces,...)', num, 'plumbing')
     defcon.addNum('NozzlesSkipBefore', 0, 0, 10, 1, 'Number of spaces between beams to skip before start distribution of nozzles', num, 'plumbing')
     defcon.addNum('NozzlesSkipAfter', 0, 0, 10, 1, 'Number of spaces between beams to keep clean of nozzles after distribution', num, 'plumbing')
