@@ -133,7 +133,6 @@ def make_fastener(doc, baseOrPanel, grp, name, x, y, direction, upcorner=False):
         c.Edges = edges
         #grp.addObject(c)
         hole = doc.addObject('Part::Cylinder', f'{name}IndexHole')
-        #holes = doc.addObject('App::Part', f'{name}Holes')
         holerot = Rotation(Vector(1,0,0), 90)
         holecenter = hole.Placement.Base
         hole.Placement = Placement(holecenter, holerot)

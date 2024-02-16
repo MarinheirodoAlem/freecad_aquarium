@@ -43,7 +43,7 @@ def set_XYZ(obj, x=None, y=None, z=None):
 
 
 def drill(doc, type, hole):
-    getHole(doc, type).Group = [hole] + getHole(doc, type).Group
+    getHole(doc, type).Base.Group = [hole] + getHole(doc, type).Base.Group
 
 def extend_hole(hole):
     hole.setExpression('.Placement.Base.z', '0')

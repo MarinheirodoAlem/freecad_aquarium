@@ -25,8 +25,15 @@ def getHole(doc, type):
     name=f'Holes{type}'
     o = doc.getObject(name)
     if o == None:
-        o = doc.addObject('App::Part', name)
-        o.setExpression('.Placement.Base.z', '0 mm')
-        o.Group = doc.addObject("Part::Box","MockHole")
+        o = doc.addObject("Part::Cut", name)
+        o.Base = doc.addObject('App::Part', f'{name}Base')
+        o.Base.setExpression('.Placement.Base.z', '0 m')
+        o.Tool = doc.addObject('App::Part',f'{name}Exclusion')
+        mock_hole = doc.addObject("Part::Box","MockHole")
+        mock_hole.setExpression('.Placement.Base.z', '-1.1 m')
+        o.Base.Group = mock_hole
+        mock_excl = doc.addObject("Part::Box","MockExcl")
+        mock_excl.setExpression('.Placement.Base.z', '-1.101 m')
+        o.Tool.Group = mock_excl
         o.Visibility = False
     return o
