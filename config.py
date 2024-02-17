@@ -199,7 +199,7 @@ def DefaultsConfig(categories):
     defcon.addNum('HideExtraBottom', 10, 0, 20, 1, 'Space to overlap panels to glass and hide bottom of euro braces and sand', mm, 'visual')
     defcon.addNum('WeirWallThickness', 4, 1, 10, 1, 'Thickness of the weir panel', mm, 'weir')
     defcon.addNum('WeirSlotWidth', 3, 1, 10, 1, 'Size of the slot in the weir that lets water in and keep snail out', mm, 'weir')
-    defcon.addNum('WaterHeightWeir', 600, 20, 2000, 10, 'Level of water inside weir when pumps are working', mm, 'weir')
+    defcon.addNum('WaterHeightWeir', 625, 20, 2000, 10, 'Level of water inside weir when pumps are working', mm, 'weir')
     defcon.addNum('BulkHeadDiameter', 33, 4, 300, 1, 'Diameter of the bulk head hole', mm, 'plumbing')
     defcon.addNum('BulkHeadNumber', 6, 2, 10, 1, 'Number of buld heads in weir', num, 'weir', 'plumbing')
     defcon.addNum('BeanAnimalMainDrainLevel', 450, 20, 2000, 10, 'Water level of the main pipe from Bean Animal style drain', mm, 'weir', 'plumbing')
