@@ -151,7 +151,7 @@ def make_fastener(doc, baseOrPanel, grp, name, x, y, direction, upcorner=False):
         drilled = doc.addObject("Part::Cut", f'{name}Drilled')
         drilled.Base = c
         drilled.Tool = holes
-        grp.addObject(drilled)
+        #grp.addObject(drilled)
         base.Group = [ drilled ]
         b.Visibility = False
         c.Visibility = False
