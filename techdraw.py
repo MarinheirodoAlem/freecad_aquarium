@@ -39,7 +39,7 @@ def measure(doc, page, type, name, proj, *geoms):
     return m
 
 
-def add_tech_draw(doc, name, HardHidden, *objs):
+def add_tech_draw(doc, name, HardHidden, projs, *objs):
     print(f"add_tech_draw: {objs}")
     page = doc.addObject('TechDraw::DrawPage', f'{name}BluePrint')
     tpl = doc.addObject('TechDraw::DrawSVGTemplate', f'{name}Template')
@@ -54,27 +54,34 @@ def add_tech_draw(doc, name, HardHidden, *objs):
         obj = doc.getObject(o)
         source_grp.append(obj)
     group.Source = source_grp
-    group.ProjectionType = "First Angle"
+    group.ProjectionType = "Third Angle"
     group.ScaleType = 'Custom'
     group.Scale = .05
     #group.ScaleType = 'Automatic'
-    group.setExpression('X', f'{name}Template.Width/4*3')
-    group.setExpression('Y', f'{name}Template.Height/4*3')
-    front_view = group.addProjection("Front")
-    front_view.Label = f"Front {name}"
-    front_view.HardHidden = HardHidden
-     # First projection will become the Anchor.
-    group.Anchor.Direction = (0, -1, 0)
-    group.Anchor.RotationVector = (1, 0, 0)
-    top_view = group.addProjection("Top")
-    top_view.Label = f"Top {name}"
-    top_view.HardHidden = HardHidden
-    right_view = group.addProjection("Right")
-    right_view.Label = f"Right {name}"
-    right_view.HardHidden = HardHidden
-    ftr_view = group.addProjection("FrontTopRight")
-    ftr_view.Label = f"Perspective {name}"
-    ftr_view.HardHidden = HardHidden
+    group.setExpression('X', f'{name}Template.Width/{len(projs)}')
+    group.setExpression('Y', f'{name}Template.Height/{len(projs)}')
+    first = True
+    for p in projs:
+        view = group.addProjection(p)
+        view.Label = ''
+        view.HardHidden = HardHidden
+        print(p)
+        if first:
+            #First projection will become the Anchor.
+            if p=="Front":
+                group.Anchor.Direction = (0, -1, 0)
+                group.Anchor.RotationVector = (1, 0, 0)
+            if p=="Top":
+                group.Anchor.Direction = (0, 0, -1)
+                group.Anchor.RotationVector = (1, 0, 0)
+            elif p=="Right":
+                group.Anchor.Direction = (0, 0, -1)
+                group.Anchor.RotationVector = (1, 0, 0)
+            first = False
+
+
+    #group.X = page.Template.Width / 2
+    #group.Y = page.Template.Height / 2
     group.recompute()
     doc.recompute()
     # measure(doc,group, 'Angle', 'cut45', top_view, 'Edge9', 'Edge0')
@@ -89,16 +96,18 @@ def clear_log():
     r.clear()
 
 def draw_structure(doc):
-    add_tech_draw(doc, 'Base', False, 'StandStructure')
+    add_tech_draw(doc, 'Base', False, ["Front", "Top", "Right", "FrontTopRight"], 'StandStructure')
 def draw_base(doc):
-    add_tech_draw(doc, 'LevelingBase', False, 'LevelingBase')
+    add_tech_draw(doc, 'LevelingBase', False, ["Front", "Top", "Right", "FrontTopRight"], 'LevelingBase')
 def draw_bottom_glass(doc):
-    add_tech_draw(doc, 'GlassPanelBase', True, 'BottomGlassDrilled')
+    add_tech_draw(doc, 'GlassPanelBase', True, ["Front", "Top", "Right", "FrontTopRight"], 'BottomGlassDrilled')
 def draw_side_glass(doc):
-    add_tech_draw(doc, 'GlassPanelsSides', True,'SidesGlass') # 'LeftGlass', 'RightGlass', 'BackGlass', 'FrontGlass')
+    add_tech_draw(doc, 'GlassPanelsSides', True, ["Front", "Top", "Right", "FrontTopRight"],'SidesGlass')
 def draw_braces_base(doc):
-    add_tech_draw(doc, 'GlassEuroBraceWeirBase', True, 'GlassBracesWeirFrame')
+    add_tech_draw(doc, 'GlassEuroBraceWeirBase', True, ["Front", "Top", "Right", "FrontTopRight"], 'GlassBracesWeirFrame')
 def draw_braces_top(doc):
-    add_tech_draw(doc, 'GlassEuroBraceSuperior', True, 'GlassBracesTop')
+    add_tech_draw(doc, 'GlassEuroBraceSuperior', True, ["Front", "Top", "Right", "FrontTopRight"], 'GlassBracesTop')
 def draw_braces_bottom(doc):
-    add_tech_draw(doc, 'GlassEuroBraceInferior', True, 'GlassBracesBottom')
+    add_tech_draw(doc, 'GlassEuroBraceInferior', True, ["Front", "Top", "Right", "FrontTopRight"], 'GlassBracesBottom')
+def draw_weir(doc):
+    add_tech_draw(doc, 'Weir', True, ["Front"], 'Weir')

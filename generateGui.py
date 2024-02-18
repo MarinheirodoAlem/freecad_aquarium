@@ -132,6 +132,7 @@ def RegisterCommands():
         ('GlassEuroBraceWeirBaseBluePrint', techdraw.draw_braces_base),
         ('GlassEuroBraceSuperiorBluePrint', techdraw.draw_braces_top),
         ('GlassEuroBraceInferiorBluePrint', techdraw.draw_braces_bottom),
+        ('WeirBluePrint',                   techdraw.draw_weir),
         ]
     FreeCADGui.addCommand("GenerateBaseBluePrint",                  Generate("GenerateBaseBluePrint",                  "BaseBluePrint",                  "Generate BaseBluePrint",                  tech_draw[0]))
     FreeCADGui.addCommand("GenerateLevelingBaseBluePrint",          Generate("GenerateLevelingBaseBluePrint",          "LevelingBaseBluePrint",          "Generate LevelingBaseBluePrint",          tech_draw[1]))
@@ -140,6 +141,7 @@ def RegisterCommands():
     FreeCADGui.addCommand("GenerateGlassEuroBraceWeirBaseBluePrint",Generate("GenerateGlassEuroBraceWeirBaseBluePrint","GlassEuroBraceWeirBaseBluePrint","Generate GlassEuroBraceWeirBaseBluePrint",tech_draw[4]))
     FreeCADGui.addCommand("GenerateGlassEuroBraceSuperiorBluePrint",Generate("GenerateGlassEuroBraceSuperiorBluePrint","GlassEuroBraceSuperiorBluePrint","Generate GlassEuroBraceSuperiorBluePrint",tech_draw[5]))
     FreeCADGui.addCommand("GenerateGlassEuroBraceInferiorBluePrint",Generate("GenerateGlassEuroBraceInferiorBluePrint","GlassEuroBraceInferiorBluePrint","Generate GlassEuroBraceInferiorBluePrint",tech_draw[6]))
+    FreeCADGui.addCommand("GenerateWeirBluePrint"                  ,Generate("GenerateWeirBluePrint",                  "WeirBluePrint",                  "Generate WeirBluePrint",                  tech_draw[7]))
 
 
 def AllCommands():
@@ -158,11 +160,12 @@ def AllCommands():
     ]
 def AllBluePrintCommands():
     return [
-        "GenerateBaseBluePrint",                  
-        "GenerateLevelingBaseBluePrint",                  
-        "GenerateGlassPanelBaseBluePrint",        
-        "GenerateGlassPanelsSidesBluePrint",      
+        "GenerateBaseBluePrint",
+        "GenerateLevelingBaseBluePrint",
+        "GenerateGlassPanelBaseBluePrint",
+        "GenerateGlassPanelsSidesBluePrint",
         "GenerateGlassEuroBraceWeirBaseBluePrint",
         "GenerateGlassEuroBraceSuperiorBluePrint",
         "GenerateGlassEuroBraceInferiorBluePrint",
+        "GenerateWeirBluePrint",
     ]
