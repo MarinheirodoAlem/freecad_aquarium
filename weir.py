@@ -149,8 +149,8 @@ def create_weir(doc):
     all_hor_reinforcements = doc.addObject('PartDesign::LinearPattern', 'all_hor_reinforcements')
     all_hor_reinforcements.BaseFeature = fasteners_reinforcement_profile
     all_hor_reinforcements.Direction = (fasteners_reinforcement_profile, ['H_Axis'])
-    all_len = 'Computed.WeirHorizontalFastenerHidth'
-    all_hor_reinforcements.setExpression('Length', all_len)
+    all_fast_hor_len = 'Computed.WeirHorizontalFastenerHidth'
+    all_hor_reinforcements.setExpression('Length', all_fast_hor_len)
     all_hor_reinforcements.setExpression('Occurrences', 'Config.WeirFastenerHorizontalCount')
     all_hor_reinforcements.Length = 10.0
     all_hor_reinforcements.Occurrences = 2
@@ -195,8 +195,7 @@ def create_weir(doc):
     all_hor_fasteners = doc.addObject('PartDesign::LinearPattern', 'all_hor_fasteners')
     all_hor_fasteners.BaseFeature = fastener_hole
     all_hor_fasteners.Direction = (fastener_profile, ['H_Axis'])
-    all_len = 'Computed.WeirHorizontalFastenerHidth'
-    all_hor_fasteners.setExpression('Length', all_len)
+    all_hor_fasteners.setExpression('Length', all_fast_hor_len)
     all_hor_fasteners.setExpression('Occurrences', 'Config.WeirFastenerHorizontalCount')
     #all_hor_fasteners.Length = 10.0
     all_hor_fasteners.Occurrences = 2
@@ -206,6 +205,51 @@ def create_weir(doc):
     all_hor_fasteners.ViewObject.ShapeColor = (0.20, 0.20, 0.20, 0.00)
     all_hor_fasteners.ViewObject.Visibility = False
     Weir.addObject(all_hor_fasteners)
+    fastener_vert_profile = doc.addObject('Sketcher::SketchObject', 'fastener_vert_profile')
+    geo0 = fastener_vert_profile.addGeometry(Part.Circle(Vector(1.0, 1.0, 0.0), Vector (0.0, 0.0, 1.0), 1.00))
+    geo1 = fastener_vert_profile.addGeometry(Part.Circle(Vector(1.0, 1.0, 0.0), Vector (0.0, 0.0, 1.0), 1.00))
+    fastener_vert_profile.addConstraint(Sketcher.Constraint('Diameter', geo0, 1.0))
+    fastener_vert_profile.addConstraint(Sketcher.Constraint('Diameter', geo1, 1.0))
+    fastener_vert_profile.addConstraint(Sketcher.Constraint('DistanceY', -1, 1, geo0, 3, 1.0))
+    fastener_vert_profile.addConstraint(Sketcher.Constraint('DistanceY', -1, 1, geo1, 3, 1.0))
+    fastener_vert_profile.addConstraint(Sketcher.Constraint('DistanceX', geo0, 3, 1.0))
+    fastener_vert_profile.addConstraint(Sketcher.Constraint('DistanceX', geo1, 3, 1.0))
+    fastener_vert_profile.setExpression('Constraints[0]', 'Config.WeirFastenerDiameter')
+    fastener_vert_profile.setExpression('Constraints[1]', 'Config.WeirFastenerDiameter')
+    fastener_vert_profile.setExpression('Constraints[2]', 'Config.BraceWidth+Config.WeirFastenerOffset')
+    fastener_vert_profile.setExpression('Constraints[3]', 'Config.BraceWidth+Config.WeirFastenerOffset')
+    fastener_vert_profile.setExpression('Constraints[4]', 'Computed.WeirMargin+Config.SidesGlassThickness+Config.WeirFastenerOffset')
+    fastener_vert_profile.setExpression('Constraints[5]', 'Computed.WeirMargin+Computed.WeirWidth-Config.SidesGlassThickness-Config.WeirFastenerOffset')
+    fastener_vert_profile.MapMode = 'FlatFace'
+    fastener_vert_profile.Placement = placemnt
+    fastener_vert_profile.Visibility = False
+    fastener_vert_profile.ViewObject.Visibility = False
+    Weir.addObject(fastener_vert_profile)
+    fastener_vert_hole = doc.addObject('PartDesign::Pocket', 'fastener_vert_hole')
+    fastener_vert_hole.BaseFeature = all_hor_fasteners
+    fastener_vert_hole.Direction = Vector(-0.00, 1.00, 0.00)
+    fastener_vert_hole.Midplane = True
+    fastener_vert_hole.Placement = placemnt
+    fastener_vert_hole.Profile = (fastener_vert_profile, [])
+    fastener_vert_hole.ReferenceAxis = (fastener_vert_profile, ['N_Axis'])
+    fastener_vert_hole.Type = 'ThroughAll'
+    fastener_vert_hole.Visibility = False
+    fastener_vert_hole.ViewObject.ShapeColor = (0.20, 0.20, 0.20, 0.00)
+    fastener_vert_hole.ViewObject.Visibility = False
+    Weir.addObject(fastener_vert_hole)
+    all_vert_fasteners = doc.addObject('PartDesign::LinearPattern', 'all_vert_fasteners')
+    all_vert_fasteners.BaseFeature = fastener_vert_hole
+    all_vert_fasteners.Direction = (fastener_vert_profile, ['V_Axis'])
+    all_vert_fasteners.setExpression('Length', 'Computed.WeirVerticalFastenerHidth')
+    all_vert_fasteners.setExpression('Occurrences', 'Config.WeirFastenerVerticalCount')
+    #all_vert_fasteners.Length = 10.0
+    all_vert_fasteners.Occurrences = 2
+    all_vert_fasteners.Originals = [fastener_vert_hole]
+    all_vert_fasteners.Placement = placemnt
+    all_vert_fasteners.Visibility = False
+    all_vert_fasteners.ViewObject.ShapeColor = (0.20, 0.20, 0.20, 0.00)
+    all_vert_fasteners.ViewObject.Visibility = False
+    Weir.addObject(all_vert_fasteners)
     hole_reinforcement = doc.addObject('Sketcher::SketchObject', 'hole_reinforcement')
     geo0 = hole_reinforcement.addGeometry(Part.Circle(Vector(112.00, 428.50, 0.00), Vector (0.0, 0.0, 1.0), 19.00))
     geo1 = hole_reinforcement.addGeometry(Part.Circle(Vector(112.00, 428.50, 0.00), Vector (0.0, 0.0, 1.0), 14.00))
@@ -225,7 +269,7 @@ def create_weir(doc):
     hole_reinforcement.ViewObject.Visibility = False
     Weir.addObject(hole_reinforcement)
     Bulk_Head_Reinforced = doc.addObject('PartDesign::Pad', 'Bulk_Head_Reinforced')
-    Bulk_Head_Reinforced.BaseFeature = all_hor_fasteners
+    Bulk_Head_Reinforced.BaseFeature = all_vert_fasteners
     Bulk_Head_Reinforced.Direction = Vector(0.00, -1.00, -0.00)
     Bulk_Head_Reinforced.setExpression('Length', 'Config.WeirWallThickness')
     Bulk_Head_Reinforced.Length = 4.0
