@@ -40,7 +40,6 @@ def measure(doc, page, type, name, proj, *geoms):
 
 
 def add_tech_draw(doc, name, HardHidden, projs, *objs):
-    print(f"add_tech_draw: {objs}")
     page = doc.addObject('TechDraw::DrawPage', f'{name}BluePrint')
     tpl = doc.addObject('TechDraw::DrawSVGTemplate', f'{name}Template')
     tpl.Template = App.getResourceDir() + '/Mod/TechDraw/Templates/A4_Landscape_blank.svg'
@@ -57,15 +56,15 @@ def add_tech_draw(doc, name, HardHidden, projs, *objs):
     group.ProjectionType = "Third Angle"
     group.ScaleType = 'Custom'
     group.Scale = .05
+    group.AutoDistribute=False
     #group.ScaleType = 'Automatic'
-    group.setExpression('X', f'{name}Template.Width/{len(projs)}')
-    group.setExpression('Y', f'{name}Template.Height/{len(projs)}')
+    #group.setExpression('X', f'{name}Template.Width/{len(projs)}')
+    #group.setExpression('Y', f'{name}Template.Height/{len(projs)}')
     first = True
     for p in projs:
         view = group.addProjection(p)
         view.Label = ''
         view.HardHidden = HardHidden
-        print(p)
         if first:
             #First projection will become the Anchor.
             if p=="Front":
