@@ -32,6 +32,7 @@ from panelsdoors import make_stand_cover, make_canopy_cover
 from canopy import make_canopy
 from pipes import make_pipes, make_nozzles, make_flanges, make_water
 from glass import make_glass
+from sump import make_sump
 from base import make_leveling_base
 from weir import create_weir
 from config import GetConfiguration
@@ -112,6 +113,7 @@ def RegisterCommands():
         ('CanopyStructure', make_canopy),
         ('CanopyPanels',  make_canopy_cover),
         ('Water', make_water),
+        ('Sump', make_sump),
         ]
     FreeCADGui.addCommand("GenerateAll",            Generate("GenerateAll",         "Everything",      "Generate everything",                     objs))
     FreeCADGui.addCommand("GenerateStructure",      Generate("GenerateStructure",   "Structure",       "Generate the Sump Structure",             objs[0]))
@@ -124,6 +126,7 @@ def RegisterCommands():
     FreeCADGui.addCommand("GenerateCanopy",         Generate("GenerateCanopy",      "Canopy",          "Generate the Canopy",                     objs[8]))
     FreeCADGui.addCommand("GenerateCanopyPanels",   Generate("GenerateCanopyPanels","Canopy Panels",   "Generate the Canopy Panels",              objs[9]))
     FreeCADGui.addCommand("GenerateWater",          Generate("GenerateWater",       "Water",           "Generate water dimension",                objs[10]))
+    FreeCADGui.addCommand("GenerateSump",           Generate("GenerateSump",        "Sump",            "Generate Sump",                           objs[11]))
     tech_draw = [
         ('BaseBluePrint',                   techdraw.draw_structure),
         ('LevelingBaseBluePrint',           techdraw.draw_base),
@@ -157,6 +160,7 @@ def AllCommands():
         "GenerateCanopy",
         "GenerateCanopyPanels",
         "GenerateWater",
+        "GenerateSump",
     ]
 def AllBluePrintCommands():
     return [

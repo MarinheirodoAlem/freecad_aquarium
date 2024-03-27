@@ -225,6 +225,10 @@ def DefaultsConfig(categories):
     defcon.addNum('CanopyBeams2Top', 100, 0, 100, 1, 'Free space from top of canopy column to top of beams (slightly smaller than groove space)', mm, 'canopy')
     defcon.addNum('CanopyExtraBeams', 2, 0, 10, 1, 'Number of beams to hang lights and other stuff, zero to disable', num, 'canopy')
     defcon.addNum('PanelThickness', 15, 1, 30, 1, 'Thickness of external panel', mm, 'structure')
+    defcon.addNum('SumpAcrylicThickness', 5, 1, 10, 2, 'Thickness of the acrylic panels for the sump', mm, 'sump')
+    defcon.addNum('SumpHeight', 350, 10, 500, 300, 'Height of sump', mm, 'sump')
+    defcon.addNum('SumpExtraSpaceForChiller', 350, 10, 1000, 0, 'Space left inside sump for extra dry equipment (like chiller)', mm, 'sump')
+    defcon.addNum('SumpExtraMargin', 10, 1, 50, 0, 'Space left around sump on all sides to structure', mm, 'sump')
     return defcon
 
 
@@ -306,7 +310,9 @@ def MakeComputed(doc):
     s.add('SumpBeamsLevel', '=Config.Sump2FloorSpaceForBroom+Config.MetalProfileWidth/2', 'Level of center of sump beams')
     s.add('WaterLevelDeepest', '=Config.StandVisibleHeight-Config.HideExtraBottom-Config.SidesGlassThickness', 'Level of the base glass')
     s.add('GlassLevel', '=WaterLevelDeepest-Config.BottomGlassThickness', 'Level of the deepest water inside glass (pipes can go deeper)')
-    s.add('UnderGlassBaseLevel', '=GlassLevel-Config.UnderGlassLevelingBaseThickness', 'Level of the base that distribute que weigth to the structure')
+    s.add('UnderGlassBaseLevel', '=GlassLevel-Config.UnderGlassLevelingBaseThickness', 'Level of the base that distribute the aquarium weight to the structure')
+    s.add('UnderBaseLevelSump', '=Config.Sump2FloorSpaceForBroom+Config.MetalProfileWidth', 'Level of the base that distribute the sump weight to the structure')
+    s.add('SumpAcrylicLevel', '=UnderBaseLevelSump+Config.UnderGlassLevelingBaseThickness', 'Level of the sump acrylic aquarium')
     s.add('BeamsLevel', '=UnderGlassBaseLevel-Config.MetalProfileWidth/2', 'Level of center of sump beams')
     s.add('SumpBoardLevel', '=Config.Sump2FloorSpaceForBroom+Config.MetalProfileWidth', 'Level of sump base board')
     s.add('RealGlassHeight', '=Config.VisibleHeightGlass+Config.HideExtraTop+Config.HideExtraBottom+3*Config.SidesGlassThickness', 'Real height of glass panels')

@@ -166,6 +166,7 @@ def RegisterCommands():
     FreeCADGui.addCommand("ConfigureGlass", Configure("ConfigureGlass", "Glass Panels", "Configure the Glass Parts", "glass"))
     FreeCADGui.addCommand("ConfigureWeir", Configure("ConfigureWeir", "Weir", "Configure the Weir", "weir"))
     FreeCADGui.addCommand("ConfigureCanopy", Configure("ConfigureCanopy", "Canopy", "Configure the Canopy", "canopy"))
+    FreeCADGui.addCommand("ConfigureSump", Configure("ConfigureSump", "Sump", "Configure the Sump", "sump"))
 
 
 def AllCommands():
@@ -176,5 +177,6 @@ def AllCommands():
         "ConfigurePlumbing",
         "ConfigureGlass",
         "ConfigureWeir",
-        "ConfigureCanopy"
+        "ConfigureCanopy",
+        "ConfigureSump",
     ]

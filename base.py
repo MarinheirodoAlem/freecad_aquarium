@@ -39,4 +39,6 @@ def make_leveling_base(doc):
     grp.removeObject(b)
     grp.addObject(base)
     base.ViewObject.ShapeColor = (1 / 3, 1 / 3, 0.0)
+    sb = make_panel(doc, grp, 'BottomBaseSump', 'Computed.LeftCornerX+Config.MetalProfileHeight', '-Computed.Length/2+Config.MetalProfileHeight', 'Computed.UnderBaseLevelSump', 'Computed.Width-2*Config.MetalProfileHeight', 'Computed.Length-2*Config.MetalProfileHeight', 'Config.UnderGlassLevelingBaseThickness')
+    grp.addObject(sb)
     return grp
