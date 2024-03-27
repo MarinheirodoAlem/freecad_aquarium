@@ -259,7 +259,7 @@ def create_weir(doc):
     hole_reinforcement.addConstraint(Sketcher.Constraint('Coincident', geo1, 3, geo0, 3))
     hole_reinforcement.addConstraint(Sketcher.Constraint('Diameter', geo1, 28.0))
     hole_reinforcement.setExpression('Constraints[0]', 'Config.BulkHeadDiameter+5')
-    center_bh = 'Computed.RealGlassHeight-Config.BulkHeadDiameter/2-Config.SidesGlassThickness-Config.WeirSlotWidth*1.5'
+    center_bh = '=Computed.BulkHeadZLevel'
     hole_reinforcement.setExpression('Constraints[1]', center_bh)
     hole_reinforcement.setExpression('Constraints[2]', 'Computed.BulkHeadSpace/2+Config.BraceWidth+2*Config.SidesGlassThickness')
     hole_reinforcement.setExpression('Constraints[4]', 'Config.BulkHeadDiameter-5')
@@ -308,7 +308,7 @@ def create_weir(doc):
     bulk_head_hole.addConstraint(Sketcher.Constraint('Vertical', geo2))
     bulk_head_hole.addConstraint(Sketcher.Constraint('Vertical', geo3))
     bulk_head_hole.addConstraint(Sketcher.Constraint('Symmetric', geo3, 1, geo2, 1, geo4, 1))
-    bulk_head_hole.addConstraint(Sketcher.Constraint('DistanceX', geo3, 1, geo5, 2, 1.00))
+    bulk_head_hole.addConstraint(Sketcher.Constraint('DistanceX', geo3, 1, geo5, 2, 1.50))
     bulk_head_hole.addConstraint(Sketcher.Constraint('PointOnObject', geo7, 2, geo3))
     bulk_head_hole.addConstraint(Sketcher.Constraint('Coincident', geo2, 2, geo1, 1))
     bulk_head_hole.addConstraint(Sketcher.Constraint('Coincident', geo6, 1, geo8, 2))
@@ -322,7 +322,7 @@ def create_weir(doc):
     bulk_head_hole.addConstraint(Sketcher.Constraint('Vertical', geo5))
     bulk_head_hole.addConstraint(Sketcher.Constraint('Vertical', geo6))
     bulk_head_hole.addConstraint(Sketcher.Constraint('Coincident', geo7, 2, geo6, 2))
-    bulk_head_hole.addConstraint(Sketcher.Constraint('DistanceX', geo6, 1, geo1, 1, 1.00))
+    bulk_head_hole.addConstraint(Sketcher.Constraint('DistanceX', geo6, 1, geo1, 1, 1.50))
     bulk_head_hole.addConstraint(Sketcher.Constraint('Coincident', geo0, 1, geo2, 1))
     bulk_head_hole.addConstraint(Sketcher.Constraint('DistanceX', geo0, 3, 112.00))
     bulk_head_hole.addConstraint(Sketcher.Constraint('Coincident', geo5, 2, geo0, 2))

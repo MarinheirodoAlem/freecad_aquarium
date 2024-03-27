@@ -350,6 +350,7 @@ def MakeComputed(doc):
     s.add('WeirVerticalFastenerHidth', '=RealGlassHeight-2*Config.WeirFastenerOffset-Config.BraceWidth-Config.SidesGlassThickness')
     s.add('StartPipes', '=LeftCornerX+(Config.BraceWidth+2*Config.SidesGlassThickness+FlangesMaxDiameter/2)')
     s.add('BulkHeadSpace', '=WeirInsideWidth/(Config.BulkHeadNumber)')
+    s.add('BulkHeadZLevel', '=Computed.RealGlassHeight-Config.BulkHeadDiameter/2-Config.SidesGlassThickness-Config.WeirSlotWidth*1.5')
     s.add('FlangeCount', '0')
     s.add('WeirFlangeOffset', '=(WeirInsideWidth-FlangesMaxDiameter)/max(FlangeCount-1;1)')
     s.add('BeamCanopyFront2BackLength', '=Computed.Length-2*Config.CanopyProfileHeight')
