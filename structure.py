@@ -135,30 +135,14 @@ def makeStandStructure(doc, cut45 = True):
     s.setExpression('.Placement.Base.y', 'Computed.FrontCornerY+Config.MetalProfileHeight/2')
     s.setExpression('Height', 'Computed.ColumnsSizeHeight')
     s.IfcType = "Column"
-    grp.addObject(s)
+    sb = Draft.make_ortho_array(s, v_x=App.Vector(10, 0, 0), v_y=App.Vector(0, 10, 0), v_z=App.Vector(0, 0, 10), n_x=2, n_y=2, n_z=1, use_link=False)
+    sb.setExpression('.IntervalX.x', '(Computed.Width-Config.MetalProfileWidth)/(Config.ColumnsStandWidthCount+1)')
+    sb.setExpression('.IntervalY.y', 'Computed.Length-Config.MetalProfileHeight')
+    sb.setExpression('NumberX', 'Config.ColumnsStandWidthCount + 2')
+    sb.ViewObject.ShapeColor = s.ViewObject.ShapeColor
+    grp.addObject(sb)
     # Fasteners
     make_supports(doc, False, grp_sup, 'Fastener')
-    s = Arch.makeStructure(profile, height=1)
-    s.Placement = Placement(Vector(0, 0, 0), Rotation(0, 0, 0))
-    s.setExpression('.Placement.Base.x', 'Computed.RightCornerX-Config.MetalProfileWidth/2')
-    s.setExpression('.Placement.Base.y', 'Computed.FrontCornerY+Config.MetalProfileHeight/2')
-    s.setExpression('Height', 'Computed.ColumnsSizeHeight')
-    s.IfcType = "Column"
-    grp.addObject(s)
-    s = Arch.makeStructure(profile, height=1)
-    s.Placement = Placement(Vector(0, 0, 0), Rotation(0, 0, 0))
-    s.setExpression('.Placement.Base.x', 'Computed.LeftCornerX+Config.MetalProfileWidth/2')
-    s.setExpression('.Placement.Base.y', 'Computed.BackCornerY-Config.MetalProfileHeight/2')
-    s.setExpression('Height', 'Computed.ColumnsSizeHeight')
-    s.IfcType = "Column"
-    grp.addObject(s)
-    s = Arch.makeStructure(profile, height=1)
-    s.Placement = Placement(Vector(0, 0, 0), Rotation(0, 0, 0))
-    s.setExpression('.Placement.Base.x', 'Computed.RightCornerX-Config.MetalProfileWidth/2')
-    s.setExpression('.Placement.Base.y', 'Computed.BackCornerY-Config.MetalProfileHeight/2')
-    s.setExpression('Height', 'Computed.ColumnsSizeHeight')
-    s.IfcType = "Column"
-    grp.addObject(s)
     s = Arch.makeStructure(profile, height=1)
     s.Placement = Placement(Vector(0, 1, 0), Rotation(0, 90, 0))
     s.setExpression('.Placement.Base.x', 'Computed.LeftCornerX+Config.MetalProfileWidth')
@@ -166,7 +150,12 @@ def makeStandStructure(doc, cut45 = True):
     s.setExpression('.Placement.Base.z', 'Computed.SumpBeamsLevel')
     s.setExpression('Height', 'Computed.BeamsSumpSizeWidth')
     s.IfcType = "Beam"
-    grp.addObject(s)
+    sb = Draft.make_ortho_array(s, v_x=App.Vector(10, 0, 0), v_y=App.Vector(0, 10, 0), v_z=App.Vector(0, 0, 10), n_x=2, n_y=2, n_z=1, use_link=False)
+    sb.setExpression('.IntervalX.x', '(Computed.Width-Config.MetalProfileWidth)/(Config.ColumnsStandWidthCount+1)')
+    sb.setExpression('.IntervalY.y', 'Computed.Length-Config.MetalProfileHeight')
+    sb.setExpression('NumberX', 'Config.ColumnsStandWidthCount + 1')
+    sb.ViewObject.ShapeColor = s.ViewObject.ShapeColor
+    grp.addObject(sb)
     s = Arch.makeStructure(profile, height=1)
     s.Placement = Placement(Vector(0, 1, 0), Rotation(0, 90, -90))
     s.setExpression('.Placement.Base.x', 'Computed.LeftCornerX+Config.MetalProfileHeight/2')
@@ -181,14 +170,6 @@ def makeStandStructure(doc, cut45 = True):
     s.setExpression('.Placement.Base.y', 'Computed.FrontCornerY+Config.MetalProfileHeight')
     s.setExpression('.Placement.Base.z', 'Computed.SumpBeamsLevel')
     s.setExpression('Height', 'Computed.BeamsSumpSizeLength')
-    s.IfcType = "Beam"
-    grp.addObject(s)
-    s = Arch.makeStructure(profile, height=1)
-    s.Placement = Placement(Vector(0, 1, 0), Rotation(0, 90, 0))
-    s.setExpression('.Placement.Base.x', 'Computed.LeftCornerX+Config.MetalProfileWidth')
-    s.setExpression('.Placement.Base.y', 'Computed.BackCornerY-Config.MetalProfileHeight/2')
-    s.setExpression('.Placement.Base.z', 'Computed.SumpBeamsLevel')
-    s.setExpression('Height', 'Computed.BeamsSumpSizeWidth')
     s.IfcType = "Beam"
     grp.addObject(s)
     def make_beam_support(name, posZ):

@@ -163,16 +163,24 @@ def make_fasteners(doc, baseOrPanel, grp, name, x, y, direction):
     make_fastener(doc, baseOrPanel, grp, f'{name}{direction}Bottom', x, y, direction, False)
 
 def make_supports(doc, baseOrPanel, grp_sup, name):
-    make_fasteners(doc, baseOrPanel, grp_sup, name, 'Computed.LeftCornerX', 'Computed.FrontCornerY', 0)
-    make_fasteners(doc, baseOrPanel, grp_sup, name, 'Computed.RightCornerX', 'Computed.FrontCornerY', 1)
-    make_fasteners(doc, baseOrPanel, grp_sup, name, 'Computed.RightCornerX', 'Computed.BackCornerY', 2)
-    make_fasteners(doc, baseOrPanel, grp_sup, name, 'Computed.LeftCornerX', 'Computed.BackCornerY', 3)
+    sup_width = doc.addObject('App::Part', 'PanelSupportsWidth')
+    sup_length = doc.addObject('App::Part', 'PanelSupportsLength')
+    make_fasteners(doc, baseOrPanel, sup_width, name, 'Computed.LeftCornerX', 'Computed.FrontCornerY', 0)
+    make_fasteners(doc, baseOrPanel, sup_length, name, 'Computed.RightCornerX', 'Computed.FrontCornerY', 1)
+    make_fasteners(doc, baseOrPanel, sup_width, name, 'Computed.LeftCornerX+Computed.BeamsSumpSizeWidth+2*Config.MetalProfileWidth', 'Computed.BackCornerY', 2)
+    make_fasteners(doc, baseOrPanel, sup_length, name, 'Computed.LeftCornerX', 'Computed.BackCornerY', 3)
     if baseOrPanel:
         pt = 'Config.PanelBlockThickness'
     else:
         pt = 'Config.PanelMountThickness'
-    make_fasteners(doc, baseOrPanel, grp_sup, name, 'Computed.LeftCornerX', f'Computed.BackCornerY-{pt}', 4)
-    make_fasteners(doc, baseOrPanel, grp_sup, name, f'Computed.LeftCornerX+{pt}', 'Computed.FrontCornerY', 5)
-    make_fasteners(doc, baseOrPanel, grp_sup, name, 'Computed.RightCornerX', f'Computed.FrontCornerY+{pt}', 6)
-    make_fasteners(doc, baseOrPanel, grp_sup, name, f'Computed.RightCornerX-{pt}', 'Computed.BackCornerY', 7)
+    make_fasteners(doc, baseOrPanel, sup_width, name, 'Computed.LeftCornerX', f'Computed.BackCornerY-{pt}', 4)
+    make_fasteners(doc, baseOrPanel, sup_length, name, f'Computed.LeftCornerX+{pt}', 'Computed.FrontCornerY', 5)
+    make_fasteners(doc, baseOrPanel, sup_width, name, 'Computed.LeftCornerX+Computed.BeamsSumpSizeWidth+2*Config.MetalProfileWidth', f'Computed.FrontCornerY+{pt}', 6)
+    make_fasteners(doc, baseOrPanel, sup_length, name, f'Computed.RightCornerX-{pt}', 'Computed.BackCornerY', 7)
+    sb = Draft.make_ortho_array(sup_width, v_x=App.Vector(10, 0, 0), v_y=App.Vector(0, 10, 0), v_z=App.Vector(0, 0, 10), n_x=2, n_y=1, n_z=1, use_link=False)
+    sb.setExpression('.IntervalX.x', '(Computed.Width-Config.MetalProfileWidth)/(Config.ColumnsStandWidthCount+1)')
+    sb.setExpression('NumberX', 'Config.ColumnsStandWidthCount + 1')
+    #sb.ViewObject.ShapeColor = X.ViewObject.ShapeColor
+    grp_sup.addObject(sb)
+    grp_sup.addObject(sup_length)
 
