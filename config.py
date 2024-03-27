@@ -179,7 +179,7 @@ def DefaultsConfig(categories):
     defcon.addNum('Length', 580, 20, 5000, 10, 'External length of aquarium', mm, 'structure', 'visual')
     defcon.addNum('VisibleHeightGlass', 600, 20, 2000, 10, 'View Height of the glass', mm, 'structure', 'visual')
     defcon.addNum('StandVisibleHeight', 800, 500, 1500, 10, 'Height from the floor to the visible part of the aquarium', mm, 'structure', 'visual')
-    defcon.addNum('Sump2FloorSpaceForBroom', 100, 0, 500, 10, 'Space free from bottom part of sump to floor', mm, 'structure')
+    defcon.addNum('Sump2FloorSpaceForBroom', 20, 0, 500, 10, 'Space free from bottom part of sump to floor', mm, 'structure')
     defcon.addNum('Panel2FloorSpace', 5, 0, 100, 1, 'Space free from cover of stand to floor', mm, 'visual', 'structure')
     defcon.addNum('BeamsStandCount', 5, 0, 10, 1, 'Number of beans in the middle of the stand', num, 'structure', 'plumbing')
     defcon.addNum('ColumnsStandWidthCount', 1, 0, 10, 1, 'Number of extra columns along the width of the stand', num, 'structure')
