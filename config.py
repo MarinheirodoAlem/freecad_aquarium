@@ -229,6 +229,8 @@ def DefaultsConfig(categories):
     defcon.addNum('SumpHeight', 350, 10, 500, 300, 'Height of sump', mm, 'sump')
     defcon.addNum('SumpExtraSpaceForChiller', 350, 10, 1000, 0, 'Space left inside sump for extra dry equipment (like chiller)', mm, 'sump')
     defcon.addNum('SumpExtraMargin', 10, 1, 50, 0, 'Space left around sump on all sides to structure', mm, 'sump')
+    defcon.addNum('SumpInternalSpaceForEquipment', 450, 10, 1000, 200, 'Space for equipment (skimmer/filters)', mm, 'sump')
+    defcon.addNum('SumpInternalLevelEquipment', 450, 10, 1000, 200, 'Max height of water in equipment compartment', mm, 'sump')
     return defcon
 
 

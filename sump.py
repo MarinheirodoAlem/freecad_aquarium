@@ -49,8 +49,50 @@ def make_sump(doc):
     sump_color(back)
     left = make_panel(doc, grp_gs, 'LeftPanel','Computed.LeftCornerX+(Config.SumpExtraMargin+Config.MetalProfileHeight)+Config.SumpExtraSpaceForChiller','-Computed.Length/2+(Config.SumpExtraMargin+Config.MetalProfileHeight)', z_b, 'Config.SumpAcrylicThickness','Computed.Length-2*(Config.SumpExtraMargin+Config.MetalProfileHeight)-Config.SumpAcrylicThickness','Config.SumpHeight-Config.SumpAcrylicThickness')
     sump_color(left)
+    placemnt = Placement(Vector(0, 0, 0), Rotation (90, 0, 90))
+    #fuge = make_panel(doc, grp_gs, 'RefugiumPanel',
+    # 'Computed.LeftCornerX+(Config.SumpExtraMargin+Config.MetalProfileHeight)+Config.SumpExtraSpaceForChiller+(Computed.Width-2*(Config.SumpExtraMargin+Config.MetalProfileHeight+Config.SumpAcrylicThickness)-Config.SumpExtraSpaceForChiller-Config.SumpInternalSpaceForEquipment)'
+    #,
+    #'-Computed.Length/2+(Config.SumpExtraMargin+Config.MetalProfileHeight+Config.SumpAcrylicThickness)'
+    #, z_b,
+    # 'Config.SumpAcrylicThickness'
+    #,
+    #'Computed.Length-2*(Config.SumpExtraMargin+Config.MetalProfileHeight)-2*Config.SumpAcrylicThickness'
+    #,
+    #'Config.SumpHeight-Config.SumpAcrylicThickness')
+    #sump_color(fuge)
     right = make_panel(doc, grp_gs, 'RightPanel','Computed.RightCornerX-(Config.SumpExtraMargin+Config.MetalProfileHeight)-Config.SumpAcrylicThickness','-Computed.Length/2+(Config.SumpExtraMargin+Config.MetalProfileHeight)', z_b, 'Config.SumpAcrylicThickness','Computed.Length-2*(Config.SumpExtraMargin+Config.MetalProfileHeight)-Config.SumpAcrylicThickness','Config.SumpHeight-Config.SumpAcrylicThickness')
     sump_color(right)
     front = make_panel(doc, grp_gs, 'FrontPanel','Computed.LeftCornerX+(Config.SumpExtraMargin+Config.SumpExtraSpaceForChiller+Config.MetalProfileHeight+Config.SumpAcrylicThickness)','-Computed.Length/2+(Config.SumpExtraMargin+Config.MetalProfileHeight)', z_b, 'Computed.Width-2*(Config.SumpExtraMargin+Config.MetalProfileHeight+Config.SumpAcrylicThickness)-Config.SumpExtraSpaceForChiller','Config.SumpAcrylicThickness','Config.SumpHeight-Config.SumpAcrylicThickness')
     glass_color(front)
+    fuge = doc.addObject('PartDesign::Body', 'RefugiumsWeir')
+    fuge.Group = []
+    fuge.setExpression('.Placement.Base.x', 'Computed.LeftCornerX+(Config.SumpExtraMargin+Config.MetalProfileHeight)+Config.SumpExtraSpaceForChiller+(Computed.Width-2*(Config.SumpExtraMargin+Config.MetalProfileHeight+Config.SumpAcrylicThickness)-Config.SumpExtraSpaceForChiller-Config.SumpInternalSpaceForEquipment)')
+    fuge.setExpression('.Placement.Base.y', '-Computed.Length/2+(Config.SumpExtraMargin+Config.MetalProfileHeight+Config.SumpAcrylicThickness)')
+    fuge.setExpression('.Placement.Base.z', z_b)
+    fuge_wall_weir = doc.addObject('Sketcher::SketchObject', 'fuge_wall_weir')
+    b = fuge_wall_weir.addGeometry(Part.LineSegment(Vector (0.0, 0.0, 0.0), Vector (100.0, 0.0, 0.0)))
+    fuge_wall_weir.addConstraint(Sketcher.Constraint('Horizontal', b))
+    r = fuge_wall_weir.addGeometry(Part.LineSegment(Vector (100.0, 0.0, 0.0), Vector (100.0, 50.0, 0.0)))
+    fuge_wall_weir.addConstraint(Sketcher.Constraint('Vertical', r))
+    l = fuge_wall_weir.addGeometry(Part.LineSegment(Vector (0.0, 0.0, 0.0), Vector (0.0, 50.0, 0.0)))
+    fuge_wall_weir.addConstraint(Sketcher.Constraint('Vertical', l))
+    fuge_wall_weir.addConstraint(Sketcher.Constraint('Coincident', b, 1, l, 1))
+    fuge_wall_weir.addConstraint(Sketcher.Constraint('Coincident', b, 2, r, 1))
+    fuge_wall_weir.MapMode = 'FlatFace'
+    fuge_wall_weir.Placement = placemnt
+    fuge_wall_weir.Visibility = False
+    fuge_wall_weir.ViewObject.Visibility = False
+    fuge.addObject(fuge_wall_weir)
+    main_face = doc.addObject('PartDesign::Pad', 'main_face')
+    main_face.Direction = Vector(0.00, -1.00, -0.00)
+    main_face.setExpression('Length', 'Config.SumpAcrylicThickness')
+    main_face.Length = 4.0
+    main_face.Placement = placemnt
+    main_face.Profile = (fuge_wall_weir, [])
+    main_face.ReferenceAxis = (fuge_wall_weir, ['N_Axis'])
+    main_face.Visibility = False
+    fuge.addObject(main_face)
+    main_face.ViewObject.ShapeColor = (0.20, 0.20, 0.20, 0.00)
+    main_face.ViewObject.Visibility = False
     return grp
