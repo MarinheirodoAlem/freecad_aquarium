@@ -29,6 +29,11 @@ import FreeCAD as App
 from utils import glass_color, make_panel
 from holes import getHole
 
+def LastConstrainExp(obj, exp):
+    n = len(obj.Constraints)-1
+    print(str(obj.Constraints))
+    print(f'SET Constraints[{n}] => {exp}')
+    obj.setExpression(f'Constraints[{n}]', exp)
 
 def sump_color(obj):
     obj.ViewObject.ShapeColor=(1.0, 1.0, 1.0)
@@ -40,7 +45,7 @@ def make_sump(doc):
     grp_bp = doc.addObject('App::DocumentObjectGroup','Bottom')
     grp.addObject(grp_bp)
     grp.Label = 'Sump'
-    bg = make_panel(doc, None, 'BottomAcrylic','Computed.LeftCornerX+(Config.SumpExtraMargin+Config.SumpExtraSpaceForChiller+Config.MetalProfileHeight)','-Computed.Length/2+(Config.SumpExtraMargin+Config.MetalProfileHeight)','Computed.SumpAcrylicLevel','Computed.Width-2*(Config.SumpExtraMargin+Config.MetalProfileHeight)-Config.SumpExtraSpaceForChiller','Computed.Length-2*(Config.SumpExtraMargin+Config.MetalProfileHeight)','Config.SumpAcrylicThickness')
+    bg = make_panel(doc, grp_bp, 'BottomAcrylic','Computed.LeftCornerX+(Config.SumpExtraMargin+Config.SumpExtraSpaceForChiller+Config.MetalProfileHeight)','-Computed.Length/2+(Config.SumpExtraMargin+Config.MetalProfileHeight)','Computed.SumpAcrylicLevel','Computed.Width-2*(Config.SumpExtraMargin+Config.MetalProfileHeight)-Config.SumpExtraSpaceForChiller','Computed.Length-2*(Config.SumpExtraMargin+Config.MetalProfileHeight)','Config.SumpAcrylicThickness')
     sump_color(bg)
     z_b = 'Computed.SumpAcrylicLevel+Config.SumpAcrylicThickness'
     grp_gs = doc.addObject('App::DocumentObjectGroup','SidesSump')
@@ -50,35 +55,72 @@ def make_sump(doc):
     left = make_panel(doc, grp_gs, 'LeftPanel','Computed.LeftCornerX+(Config.SumpExtraMargin+Config.MetalProfileHeight)+Config.SumpExtraSpaceForChiller','-Computed.Length/2+(Config.SumpExtraMargin+Config.MetalProfileHeight)', z_b, 'Config.SumpAcrylicThickness','Computed.Length-2*(Config.SumpExtraMargin+Config.MetalProfileHeight)-Config.SumpAcrylicThickness','Config.SumpHeight-Config.SumpAcrylicThickness')
     sump_color(left)
     placemnt = Placement(Vector(0, 0, 0), Rotation (90, 0, 90))
-    #fuge = make_panel(doc, grp_gs, 'RefugiumPanel',
-    # 'Computed.LeftCornerX+(Config.SumpExtraMargin+Config.MetalProfileHeight)+Config.SumpExtraSpaceForChiller+(Computed.Width-2*(Config.SumpExtraMargin+Config.MetalProfileHeight+Config.SumpAcrylicThickness)-Config.SumpExtraSpaceForChiller-Config.SumpInternalSpaceForEquipment)'
-    #,
-    #'-Computed.Length/2+(Config.SumpExtraMargin+Config.MetalProfileHeight+Config.SumpAcrylicThickness)'
-    #, z_b,
-    # 'Config.SumpAcrylicThickness'
-    #,
-    #'Computed.Length-2*(Config.SumpExtraMargin+Config.MetalProfileHeight)-2*Config.SumpAcrylicThickness'
-    #,
-    #'Config.SumpHeight-Config.SumpAcrylicThickness')
-    #sump_color(fuge)
     right = make_panel(doc, grp_gs, 'RightPanel','Computed.RightCornerX-(Config.SumpExtraMargin+Config.MetalProfileHeight)-Config.SumpAcrylicThickness','-Computed.Length/2+(Config.SumpExtraMargin+Config.MetalProfileHeight)', z_b, 'Config.SumpAcrylicThickness','Computed.Length-2*(Config.SumpExtraMargin+Config.MetalProfileHeight)-Config.SumpAcrylicThickness','Config.SumpHeight-Config.SumpAcrylicThickness')
     sump_color(right)
     front = make_panel(doc, grp_gs, 'FrontPanel','Computed.LeftCornerX+(Config.SumpExtraMargin+Config.SumpExtraSpaceForChiller+Config.MetalProfileHeight+Config.SumpAcrylicThickness)','-Computed.Length/2+(Config.SumpExtraMargin+Config.MetalProfileHeight)', z_b, 'Computed.Width-2*(Config.SumpExtraMargin+Config.MetalProfileHeight+Config.SumpAcrylicThickness)-Config.SumpExtraSpaceForChiller','Config.SumpAcrylicThickness','Config.SumpHeight-Config.SumpAcrylicThickness')
     glass_color(front)
     fuge = doc.addObject('PartDesign::Body', 'RefugiumsWeir')
+    grp.addObject(fuge)
     fuge.Group = []
     fuge.setExpression('.Placement.Base.x', 'Computed.LeftCornerX+(Config.SumpExtraMargin+Config.MetalProfileHeight)+Config.SumpExtraSpaceForChiller+(Computed.Width-2*(Config.SumpExtraMargin+Config.MetalProfileHeight+Config.SumpAcrylicThickness)-Config.SumpExtraSpaceForChiller-Config.SumpInternalSpaceForEquipment)')
     fuge.setExpression('.Placement.Base.y', '-Computed.Length/2+(Config.SumpExtraMargin+Config.MetalProfileHeight+Config.SumpAcrylicThickness)')
     fuge.setExpression('.Placement.Base.z', z_b)
     fuge_wall_weir = doc.addObject('Sketcher::SketchObject', 'fuge_wall_weir')
     b = fuge_wall_weir.addGeometry(Part.LineSegment(Vector (0.0, 0.0, 0.0), Vector (100.0, 0.0, 0.0)))
+    fuge_wall_weir.addConstraint(Sketcher.Constraint('Coincident', b, 1, -1, 1))
     fuge_wall_weir.addConstraint(Sketcher.Constraint('Horizontal', b))
+    fuge_wall_weir.addConstraint(Sketcher.Constraint('DistanceX', -2, 1, b, 2, 1.0))
+    wall_len = 'Computed.Length-2*(Config.SumpExtraMargin+Config.MetalProfileHeight)-2*Config.SumpAcrylicThickness'
+    LastConstrainExp(fuge_wall_weir, wall_len)
     r = fuge_wall_weir.addGeometry(Part.LineSegment(Vector (100.0, 0.0, 0.0), Vector (100.0, 50.0, 0.0)))
     fuge_wall_weir.addConstraint(Sketcher.Constraint('Vertical', r))
+    fuge_wall_weir.addConstraint(Sketcher.Constraint('DistanceY', -1, 1, r, 2, 1.0))
+    LastConstrainExp(fuge_wall_weir, 'Config.SumpHeight-Config.SumpAcrylicThickness')
     l = fuge_wall_weir.addGeometry(Part.LineSegment(Vector (0.0, 0.0, 0.0), Vector (0.0, 50.0, 0.0)))
     fuge_wall_weir.addConstraint(Sketcher.Constraint('Vertical', l))
     fuge_wall_weir.addConstraint(Sketcher.Constraint('Coincident', b, 1, l, 1))
     fuge_wall_weir.addConstraint(Sketcher.Constraint('Coincident', b, 2, r, 1))
+    fuge_wall_weir.addConstraint(Sketcher.Constraint('Horizontal', l, 2, r, 2))
+    w1 = fuge_wall_weir.addGeometry(Part.LineSegment(Vector (0.0, 2.0, 0.0), Vector (1.0, 2.0, 0.0)))
+    fuge_wall_weir.addConstraint(Sketcher.Constraint('Horizontal', w1))
+    fuge_wall_weir.addConstraint(Sketcher.Constraint('DistanceX', -2, 1, w1, 2, 1.0))
+    LastConstrainExp(fuge_wall_weir, 'Config.FugeBorder')
+    fuge_wall_weir.addConstraint(Sketcher.Constraint('Coincident', l, 2, w1, 1))
+    w2 = fuge_wall_weir.addGeometry(Part.LineSegment(Vector (1.0, 2.0, 0.0), Vector (1.0, 1.0, 0.0)))
+    fuge_wall_weir.addConstraint(Sketcher.Constraint('Vertical', w2))
+    fuge_wall_weir.addConstraint(Sketcher.Constraint('Coincident', w1, 2, w2, 1))
+    w3 = fuge_wall_weir.addGeometry(Part.LineSegment(Vector (1.0, 1.0, 0.0), Vector (2.0, 1.0, 0.0)))
+    fuge_wall_weir.addConstraint(Sketcher.Constraint('Horizontal', w3))
+    fuge_wall_weir.addConstraint(Sketcher.Constraint('Coincident', w2, 2, w3, 1))
+    fuge_wall_weir.addConstraint(Sketcher.Constraint('DistanceY', -1, 1, w3, 1, 1.0))
+    LastConstrainExp(fuge_wall_weir, '(Config.SumpHeight-Config.SumpAcrylicThickness)/2+Config.FugeBorder')
+    w4 = fuge_wall_weir.addGeometry(Part.LineSegment(Vector (2.0, 1.0, 0.0), Vector (2.0, 2.0, 0.0)))
+    fuge_wall_weir.addConstraint(Sketcher.Constraint('Vertical', w4))
+    fuge_wall_weir.addConstraint(Sketcher.Constraint('Coincident', w3, 2, w4, 1))
+    w5 = fuge_wall_weir.addGeometry(Part.LineSegment(Vector (2.0, 2.0, 0.0), Vector (4.0, 2.0, 0.0)))
+    fuge_wall_weir.addConstraint(Sketcher.Constraint('Horizontal', w5))
+    fuge_wall_weir.addConstraint(Sketcher.Constraint('Horizontal', l, 2, w5, 1))
+    fuge_wall_weir.addConstraint(Sketcher.Constraint('Coincident', w4, 2, w5, 1))
+    fuge_wall_weir.addConstraint(Sketcher.Constraint('DistanceX', -2, 1, w5, 1, 1.0))
+    LastConstrainExp(fuge_wall_weir, f'({wall_len})/2-Config.FugeBorder')
+    fuge_wall_weir.addConstraint(Sketcher.Constraint('DistanceX', -2, 1, w5, 2, 1.0))
+    LastConstrainExp(fuge_wall_weir, f'({wall_len})/2+Config.FugeBorder')
+    w6 = fuge_wall_weir.addGeometry(Part.LineSegment(Vector (4.0, 2.0, 0.0), Vector (4.0, 1.0, 0.0)))
+    fuge_wall_weir.addConstraint(Sketcher.Constraint('Vertical', w6))
+    fuge_wall_weir.addConstraint(Sketcher.Constraint('Coincident', w5, 2, w6, 1))
+    w7 = fuge_wall_weir.addGeometry(Part.LineSegment(Vector (4.0, 1.0, 0.0), Vector (5.0, 1.0, 0.0)))
+    fuge_wall_weir.addConstraint(Sketcher.Constraint('Horizontal', w3, 1, w7, 1))
+    fuge_wall_weir.addConstraint(Sketcher.Constraint('Horizontal', w7))
+    fuge_wall_weir.addConstraint(Sketcher.Constraint('Coincident', w6, 2, w7, 1))
+    w8 = fuge_wall_weir.addGeometry(Part.LineSegment(Vector (5.0, 1.0, 0.0), Vector (5.0, 2.0, 0.0)))
+    fuge_wall_weir.addConstraint(Sketcher.Constraint('Vertical', w8))
+    fuge_wall_weir.addConstraint(Sketcher.Constraint('Coincident', w7, 2, w8, 1))
+    w9 = fuge_wall_weir.addGeometry(Part.LineSegment(Vector (5.0, 2.0, 0.0), Vector (6.0, 2.0, 0.0)))
+    fuge_wall_weir.addConstraint(Sketcher.Constraint('Horizontal', w9))
+    fuge_wall_weir.addConstraint(Sketcher.Constraint('DistanceX', -2, 1, w9, 1, 1.0))
+    LastConstrainExp(fuge_wall_weir, f'({wall_len})-Config.FugeBorder')
+    fuge_wall_weir.addConstraint(Sketcher.Constraint('Coincident', w8, 2, w9, 1))
+    fuge_wall_weir.addConstraint(Sketcher.Constraint('Coincident', r, 2, w9, 2))
     fuge_wall_weir.MapMode = 'FlatFace'
     fuge_wall_weir.Placement = placemnt
     fuge_wall_weir.Visibility = False
@@ -95,4 +137,8 @@ def make_sump(doc):
     fuge.addObject(main_face)
     main_face.ViewObject.ShapeColor = (0.20, 0.20, 0.20, 0.00)
     main_face.ViewObject.Visibility = False
+    fuge_rounded = fuge.newObject('PartDesign::Fillet','Fillet')
+    fuge_rounded.Radius = 5.0
+    fuge_rounded.setExpression('Radius', 'Config.FugeFillet/2')
+    fuge_rounded.Base = (main_face, ["Edge20","Edge17","Edge8","Edge11","Edge29","Edge23","Edge14","Edge26",])
     return grp

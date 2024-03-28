@@ -231,6 +231,11 @@ def DefaultsConfig(categories):
     defcon.addNum('SumpExtraMargin', 10, 1, 50, 0, 'Space left around sump on all sides to structure', mm, 'sump')
     defcon.addNum('SumpInternalSpaceForEquipment', 450, 10, 1000, 200, 'Space for equipment (skimmer/filters)', mm, 'sump')
     defcon.addNum('SumpInternalLevelEquipment', 450, 10, 1000, 200, 'Max height of water in equipment compartment', mm, 'sump')
+    defcon.addNum('FugeSlotWidth', 3, 1, 10, 1, 'Size of the slot in the refugium that lets water out and keep algae inside', mm, 'sump')
+    defcon.addNum('FugeFastenerDiameter', 6, 1, 10, 1, 'Diameter of holes to fasten refuge panels', mm, 'sump')
+    defcon.addNum('FugeMountHoleDiameter', 5, 1, 10, 1, 'Diameter of holes before tapping, to screw the water level panel', mm, 'sump')
+    defcon.addNum('FugeBorder', 20, 1, 50, 10, 'Space to overlap the panels that tune water level', mm, 'sump')
+    defcon.addNum('FugeFillet', 3, 1, 10, 0, 'Rounding of acrylic edges', mm, 'sump')
     return defcon
 
 
