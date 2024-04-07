@@ -65,7 +65,6 @@ def make_sump(doc):
     fuge_spliters.setExpression('NumberY', 'Config.FugeCompartments')
     glass_color(fuge_spliters)
     fuge = doc.addObject('PartDesign::Body', 'RefugiumsWeir')
-    grp.addObject(fuge)
     fuge.Group = []
     fuge_wall_weir = doc.addObject('Sketcher::SketchObject', 'fuge_wall_weir')
     b = fuge_wall_weir.addGeometry(Part.LineSegment(Vector (0.0, 0.0, 0.0), Vector (100.0, 0.0, 0.0)))
@@ -133,4 +132,48 @@ def make_sump(doc):
     fuges.Fuse=True
     glass_color(fuges)
     grp.addObject(fuges)
+    fuge_door = doc.addObject('PartDesign::Body', 'RefugiumsDoor')
+    fuge_door.Group = []
+    fuge_door_weir = doc.addObject('Sketcher::SketchObject', 'fuge_door_weir')
+    b = fuge_door_weir.addGeometry(Part.LineSegment(Vector (0.0, 0.0, 0.0), Vector (100.0, 0.0, 0.0)))
+    fuge_door_weir.addConstraint(Sketcher.Constraint('Coincident', b, 1, -1, 1))
+    fuge_door_weir.addConstraint(Sketcher.Constraint('Horizontal', b))
+    fuge_door_weir.addConstraint(Sketcher.Constraint('DistanceX', -2, 1, b, 2, 1.0))
+    LastConstrainExp(fuge_door_weir, 'Computed.SumpCompartmentLength')
+    r = fuge_door_weir.addGeometry(Part.LineSegment(Vector (100.0, 0.0, 0.0), Vector (100.0, 50.0, 0.0)))
+    fuge_door_weir.addConstraint(Sketcher.Constraint('Vertical', r))
+    fuge_door_weir.addConstraint(Sketcher.Constraint('DistanceY', -1, 1, r, 2, 1.0))
+    LastConstrainExp(fuge_door_weir, '(Config.SumpHeight-Config.SumpAcrylicThickness)/2+Config.FugeBorder')
+    l = fuge_door_weir.addGeometry(Part.LineSegment(Vector (0.0, 0.0, 0.0), Vector (0.0, 50.0, 0.0)))
+    fuge_door_weir.addConstraint(Sketcher.Constraint('Vertical', l))
+    fuge_door_weir.addConstraint(Sketcher.Constraint('Coincident', b, 1, l, 1))
+    fuge_door_weir.addConstraint(Sketcher.Constraint('Coincident', b, 2, r, 1))
+    fuge_door_weir.addConstraint(Sketcher.Constraint('Horizontal', l, 2, r, 2))
+    t = fuge_door_weir.addGeometry(Part.LineSegment(Vector (0.0, 2.0, 0.0), Vector (1.0, 2.0, 0.0)))
+    fuge_door_weir.addConstraint(Sketcher.Constraint('Coincident', t, 1, l, 2))
+    fuge_door_weir.addConstraint(Sketcher.Constraint('Coincident', t, 2, r, 2))
+    fuge_door_weir.MapMode = 'FlatFace'
+    fuge_door_weir.Placement = placemnt
+    fuge_door_weir.Visibility = False
+    fuge_door_weir.ViewObject.Visibility = False
+    fuge_door.addObject(fuge_door_weir)
+    main_door_face = doc.addObject('PartDesign::Pad', 'main_door_face')
+    main_door_face.Direction = Vector(0.00, -1.00, -0.00)
+    main_door_face.setExpression('Length', 'Config.SumpAcrylicThickness')
+    main_door_face.Length = 4.0
+    main_door_face.Placement = placemnt
+    main_door_face.Profile = (fuge_door_weir, [])
+    main_door_face.ReferenceAxis = (fuge_door_weir, ['N_Axis'])
+    main_door_face.Visibility = False
+    fuge_door.addObject(main_door_face)
+    fuge_door_rounded = fuge_door.newObject('PartDesign::Fillet','DoorFilleted')
+    fuge_door_rounded.Radius = 5.0
+    fuge_door_rounded.setExpression('Radius', 'Config.FugeFillet/2')
+    fuge_door_rounded.Base = (main_door_face, ["Edge1","Edge2","Edge5","Edge8",])
+    fuge_doors = Draft.make_ortho_array(fuge_door, v_x=App.Vector(10, 0, 0), v_y=App.Vector(0, 10, 0), v_z=App.Vector(0, 0, 10), n_x=1, n_y=2, n_z=1, use_link=False)
+    fuge_doors.setExpression('.IntervalY.y', 'Computed.SumpCompartmentLength')
+    fuge_doors.setExpression('NumberY', 'Config.FugeCompartments')
+    fuge_doors.setExpression('.Placement.Base.x', 'Computed.LeftCornerX+(Config.SumpExtraMargin+Config.MetalProfileHeight)+Config.SumpExtraSpaceForChiller+(Computed.Width-2*(Config.SumpExtraMargin+Config.MetalProfileHeight+Config.SumpAcrylicThickness)-Config.SumpExtraSpaceForChiller-Config.SumpInternalSpaceForEquipment)')
+    fuge_doors.setExpression('.Placement.Base.y', '-Computed.Length/2+(Config.SumpExtraMargin+Config.MetalProfileHeight+Config.SumpAcrylicThickness)')
+    fuge_doors.setExpression('.Placement.Base.z', z_b)
     return grp
