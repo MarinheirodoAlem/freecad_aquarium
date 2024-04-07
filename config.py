@@ -232,9 +232,11 @@ def DefaultsConfig(categories):
     defcon.addNum('SumpInternalSpaceForEquipment', 450, 10, 1000, 200, 'Space for equipment (skimmer/filters)', mm, 'sump')
     defcon.addNum('SumpInternalLevelEquipment', 450, 10, 1000, 200, 'Max height of water in equipment compartment', mm, 'sump')
     defcon.addNum('FugeSlotWidth', 3, 1, 10, 1, 'Size of the slot in the refugium that lets water out and keep algae inside', mm, 'sump')
+    defcon.addNum('FugeSlotHeight', 10, 5, 50, 1, 'Height refugium that lets water out and keep algae inside', mm, 'sump')
     defcon.addNum('FugeFastenerDiameter', 6, 1, 10, 1, 'Diameter of holes to fasten refuge panels', mm, 'sump')
     defcon.addNum('FugeMountHoleDiameter', 5, 1, 10, 1, 'Diameter of holes before tapping, to screw the water level panel', mm, 'sump')
     defcon.addNum('FugeBorder', 20, 1, 50, 10, 'Space to overlap the panels that tune water level', mm, 'sump')
+    defcon.addNum('FugePanelSpacing', 5, 1, 10, 1, 'Space for panels slide', mm, 'sump')
     defcon.addNum('FugeFillet', 3, 1, 10, 0, 'Rounding of acrylic edges', mm, 'sump')
     defcon.addNum('FugeCompartments', 3, 1, 10, 1, 'Number of Refugiums/Algae reactors in sump', num, 'sump')
     return defcon
@@ -380,6 +382,7 @@ def MakeComputed(doc):
     s.add('CanopyColumnHeight', '=Config.CanopyHeight-Config.HideExtraTop-2*Config.SidesGlassThickness');
     s.add('SumpCompartmentsLength', '=Computed.Length-2*(Config.SumpExtraMargin+Config.MetalProfileHeight)-2*Config.SumpAcrylicThickness')
     s.add('SumpCompartmentLength', '=SumpCompartmentsLength/Config.FugeCompartments')
+    s.add('SumpDoorLength', '=(SumpCompartmentsLength-Config.SumpAcrylicThickness*(Config.FugeCompartments-1))/Config.FugeCompartments')
     s.recompute()
 
 
