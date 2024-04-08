@@ -61,7 +61,7 @@ def make_sump(doc):
     glass_color(front)
     fuge_spliter = make_panel(doc, grp_gs, 'RefugiumsSplitter','Computed.LeftCornerX+(Config.SumpExtraMargin+Config.SumpExtraSpaceForChiller+Config.MetalProfileHeight+Config.SumpAcrylicThickness)','-Computed.Length/2+(Config.SumpExtraMargin+Config.MetalProfileHeight)', z_b, 'Computed.Width-2*(Config.SumpExtraMargin+Config.MetalProfileHeight+Config.SumpAcrylicThickness)-Config.SumpExtraSpaceForChiller-Config.SumpInternalSpaceForEquipment-Config.SumpAcrylicThickness','Config.SumpAcrylicThickness','Config.SumpHeight-Config.SumpAcrylicThickness')
     fuge_spliters = Draft.make_ortho_array(fuge_spliter, v_x=App.Vector(10, 0, 0), v_y=App.Vector(0, 10, 0), v_z=App.Vector(0, 0, 10), n_x=1, n_y=2, n_z=1, use_link=False)
-    fuge_spliters.setExpression('.IntervalY.y', 'Computed.SumpDoorLength+Config.SumpAcrylicThickness')
+    fuge_spliters.setExpression('.IntervalY.y', 'Computed.SumpCompartmentLength')
     fuge_spliters.setExpression('NumberY', 'Config.FugeCompartments')
     glass_color(fuge_spliters)
     fuge = doc.addObject('PartDesign::Body', 'RefugiumsWeir')
@@ -84,7 +84,7 @@ def make_sump(doc):
     w1 = fuge_wall_weir.addGeometry(Part.LineSegment(Vector (0.0, 2.0, 0.0), Vector (1.0, 2.0, 0.0)))
     fuge_wall_weir.addConstraint(Sketcher.Constraint('Horizontal', w1))
     fuge_wall_weir.addConstraint(Sketcher.Constraint('DistanceX', -2, 1, w1, 2, 1.0))
-    LastConstrainExp(fuge_wall_weir, 'Config.FugeBorder')
+    LastConstrainExp(fuge_wall_weir, 'Config.FugeBorder+Config.FugeSlideSpacing')
     fuge_wall_weir.addConstraint(Sketcher.Constraint('Coincident', l, 2, w1, 1))
     w2 = fuge_wall_weir.addGeometry(Part.LineSegment(Vector (1.0, 2.0, 0.0), Vector (1.0, 1.0, 0.0)))
     fuge_wall_weir.addConstraint(Sketcher.Constraint('Vertical', w2))
@@ -101,7 +101,7 @@ def make_sump(doc):
     fuge_wall_weir.addConstraint(Sketcher.Constraint('Horizontal', l, 2, w5, 1))
     fuge_wall_weir.addConstraint(Sketcher.Constraint('Coincident', w4, 2, w5, 1))
     fuge_wall_weir.addConstraint(Sketcher.Constraint('DistanceX', w5, 1, w5, 2, 1.0))
-    LastConstrainExp(fuge_wall_weir, 'Config.FugeBorder')
+    LastConstrainExp(fuge_wall_weir, 'Config.FugeBorder+Config.FugeSlideSpacing+Config.SumpAcrylicThickness')
     fuge_wall_weir.addConstraint(Sketcher.Constraint('Coincident', r, 2, w5, 2))
     fuge_wall_weir.MapMode = 'FlatFace'
     fuge_wall_weir.Placement = placemnt
@@ -138,9 +138,9 @@ def make_sump(doc):
     b = fuge_door_weir.addGeometry(Part.LineSegment(Vector (0.0, 0.0, 0.0), Vector (100.0, 0.0, 0.0)))
     fuge_door_weir.addConstraint(Sketcher.Constraint('Horizontal', b))
     fuge_door_weir.addConstraint(Sketcher.Constraint('DistanceX', -2, 1, b, 1, 1.0))
-    LastConstrainExp(fuge_door_weir, 'Config.FugePanelSpacing')
+    LastConstrainExp(fuge_door_weir, 'Config.FugeSlideSpacing')
     fuge_door_weir.addConstraint(Sketcher.Constraint('DistanceX', -2, 1, b, 2, 1.0))
-    LastConstrainExp(fuge_door_weir, 'Computed.SumpDoorLength-Config.FugePanelSpacing')
+    LastConstrainExp(fuge_door_weir, 'Computed.SumpCompartmentLength-(Config.FugeSlideSpacing+Config.SumpAcrylicThickness)')
     r = fuge_door_weir.addGeometry(Part.LineSegment(Vector (100.0, 0.0, 0.0), Vector (100.0, 50.0, 0.0)))
     fuge_door_weir.addConstraint(Sketcher.Constraint('Vertical', r))
     fuge_door_weir.addConstraint(Sketcher.Constraint('DistanceY', -1, 1, r, 1, 1.0))
@@ -191,7 +191,7 @@ def make_sump(doc):
     slot_profile_fuge.addConstraint(Sketcher.Constraint('DistanceY', geo1, 3, 100))
     LastConstrainExp(slot_profile_fuge, 'Config.SumpHeight-Config.SumpAcrylicThickness-Config.FugeSlotWidth-Config.FugeSlotHeight')
     slot_profile_fuge.addConstraint(Sketcher.Constraint('DistanceX', geo0, 3, 10))
-    LastConstrainExp(slot_profile_fuge, 'Config.FugeBorder+Config.FugeSlotWidth/2')
+    LastConstrainExp(slot_profile_fuge, 'Config.FugeBorder+Config.FugeSlideSpacing+Config.FugeSlotWidth/2')
     slot_profile_fuge.MapMode = 'FlatFace'
     slot_profile_fuge.Placement = placemnt
     slot_profile_fuge.Visibility = False
@@ -212,7 +212,7 @@ def make_sump(doc):
     all_slots = doc.addObject('PartDesign::LinearPattern', 'all_slots')
     all_slots.BaseFeature = one_slot
     all_slots.Direction = (slot_profile_fuge, ['H_Axis'])
-    all_len = 'Computed.SumpDoorLength-Config.FugeBorder*2'
+    all_len = 'Computed.SumpCompartmentLength-Config.SumpAcrylicThickness-2*(Config.FugeBorder+Config.FugeSlideSpacing)-Config.FugeSlotWidth'
     all_slots.setExpression('Length', all_len)
     all_slots.setExpression('Occurrences', '(' + all_len + ')/(2*Config.WeirSlotWidth)')
     all_slots.Length = 781.0
@@ -224,7 +224,7 @@ def make_sump(doc):
     all_slots.ViewObject.Visibility = False
     fuge_door.addObject(all_slots)
     fuge_doors = Draft.make_ortho_array(fuge_door, v_x=App.Vector(10, 0, 0), v_y=App.Vector(0, 10, 0), v_z=App.Vector(0, 0, 10), n_x=1, n_y=2, n_z=1, use_link=False)
-    fuge_doors.setExpression('.IntervalY.y', 'Computed.SumpDoorLength+Config.SumpAcrylicThickness')
+    fuge_doors.setExpression('.IntervalY.y', 'Computed.SumpCompartmentLength')
     fuge_doors.setExpression('NumberY', 'Config.FugeCompartments')
     fuge_doors.setExpression('.Placement.Base.x', 'Computed.LeftCornerX+(Config.SumpExtraMargin+Config.MetalProfileHeight)+Config.SumpExtraSpaceForChiller+(Computed.Width-2*(Config.SumpExtraMargin+Config.MetalProfileHeight+Config.SumpAcrylicThickness)-Config.SumpExtraSpaceForChiller-Config.SumpInternalSpaceForEquipment)-+Config.SumpAcrylicThickness')
     fuge_doors.setExpression('.Placement.Base.y', '-Computed.Length/2+(Config.SumpExtraMargin+Config.MetalProfileHeight+Config.SumpAcrylicThickness)')
