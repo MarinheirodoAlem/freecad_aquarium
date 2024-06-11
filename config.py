@@ -196,6 +196,7 @@ def DefaultsConfig(categories):
     defcon.addNum('SidesGlassThickness', 12, 2, 30, 1, 'Thickness of the glass panels from the side', mm, 'structure', 'glass')
     defcon.addNum('BottomGlassThickness', 19, 2, 30, 1, 'Thickness of the bottom glass', mm, 'structure', 'glass')
     defcon.addNum('BraceWidth', 50, 30, 100, 1, 'Size of bracing', mm, 'structure', 'glass')
+    defcon.addNum('JunctionThickness', 1.5, 0, 5, .5, 'Spacing between panel joints (silicone thickness or none for acrylic glue)', mm, 'glass')
     defcon.addNum('UnderGlassLevelingBaseThickness', 25, 1, 50, 1, 'Thickness of the base that support the weight of the aquarium', mm, 'structure', 'plumbing')
     defcon.addNum('HideExtraTop', 30, 0, 50, 1, 'Space to overlap panels to glass and try to hide euro braces and the water level', mm, 'visual')
     defcon.addNum('HideExtraBottom', 10, 0, 20, 1, 'Space to overlap panels to glass and hide bottom of euro braces and sand', mm, 'visual')
