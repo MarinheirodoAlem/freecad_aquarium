@@ -37,3 +37,6 @@ def getHole(doc, type):
         o.Tool.Group = mock_excl
         o.Visibility = False
     return o
+
+def drill(doc, type, hole):
+    getHole(doc, type).Base.Group = [hole] + getHole(doc, type).Base.Group

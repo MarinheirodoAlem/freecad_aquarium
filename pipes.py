@@ -26,7 +26,7 @@ from FreeCAD import Vector, Placement, Rotation
 import Sketcher
 import Part, Arch, ArchCommands, Draft
 import FreeCAD as App
-from holes import getHole
+from holes import getHole, drill
 
 def set_XYZ(obj, x=None, y=None, z=None):
     if isinstance(x, str):
@@ -40,10 +40,6 @@ def set_XYZ(obj, x=None, y=None, z=None):
         obj.setExpression('.Placement.Base.y', 'Computed.FlangesY')
     if isinstance(z, str):
         obj.setExpression('.Placement.Base.z', z)
-
-
-def drill(doc, type, hole):
-    getHole(doc, type).Base.Group = [hole] + getHole(doc, type).Base.Group
 
 def extend_hole(hole):
     hole.setExpression('.Placement.Base.z', '0')

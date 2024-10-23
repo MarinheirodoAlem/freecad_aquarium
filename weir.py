@@ -259,7 +259,7 @@ def create_weir(doc):
     hole_reinforcement.addConstraint(Sketcher.Constraint('Coincident', geo1, 3, geo0, 3))
     hole_reinforcement.addConstraint(Sketcher.Constraint('Diameter', geo1, 28.0))
     hole_reinforcement.setExpression('Constraints[0]', 'Config.BulkHeadDiameter+5')
-    center_bh = '=Computed.BulkHeadZLevel'
+    center_bh = 'Computed.BulkHeadZLevel'
     hole_reinforcement.setExpression('Constraints[1]', center_bh)
     hole_reinforcement.setExpression('Constraints[2]', 'Computed.BulkHeadSpace/2+Config.BraceWidth+2*Config.SidesGlassThickness')
     hole_reinforcement.setExpression('Constraints[4]', 'Config.BulkHeadDiameter-5')
