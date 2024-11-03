@@ -26,7 +26,7 @@ from FreeCAD import Vector, Placement, Rotation
 import Sketcher
 import Part, Arch, ArchCommands, Draft
 import FreeCAD as App
-
+from utils import LastConstrainExp
 
 def create_weir(doc):
     placemnt = Placement(Vector(0, 0, 0), Rotation (0.7071067811865476, 0, 0, 0.7071067811865475))
@@ -205,8 +205,195 @@ def create_weir(doc):
     all_hor_fasteners.ViewObject.ShapeColor = (0.20, 0.20, 0.20, 0.00)
     all_hor_fasteners.ViewObject.Visibility = False
     Weir.addObject(all_hor_fasteners)
+    grp = doc.addObject('App::DocumentObjectGroup','WeirAttachment')
+    def make_screw_pad(grp, name):
+        screw_pad = doc.addObject('PartDesign::Body', name)
+        screw_pad.Group = []
+        grp.addObject(screw_pad)
+        def place_fasteners(x):
+            x.setExpression('.Placement.Base.x', 'Computed.LeftCornerX+Computed.WeirMargin+Config.SidesGlassThickness')
+            x.setExpression('.Placement.Base.y', 'Computed.Length/2-Config.SidesGlassThickness-Computed.WeirDepth+2*Config.WeirWallThickness')
+            x.setExpression('.Placement.Base.z', '(Computed.GlassLevel+Config.BottomGlassThickness+Config.BraceWidth)*1 mm')
+        place_fasteners(screw_pad)
+        weir_att_pad_profile = screw_pad.newObject('Sketcher::SketchObject', f'{name}_profile')
+        def vert(x):
+            weir_att_pad_profile.addConstraint(Sketcher.Constraint('Vertical', x))
+        def horz(x):
+            weir_att_pad_profile.addConstraint(Sketcher.Constraint('Horizontal', x))
+        def c(x,y):
+            weir_att_pad_profile.addConstraint(Sketcher.Constraint('Coincident', x, 2, y, 1))
+        def line_length(line,length):
+            weir_att_pad_profile.addConstraint(Sketcher.Constraint('Distance', line, 1, line, 2, 1.0))
+            LastConstrainExp(weir_att_pad_profile,length)
+        v1 = weir_att_pad_profile.addGeometry(Part.LineSegment(Vector (1.0, 0.0, 0.0), Vector (0.1, 1.0, 0.0)))
+        vert(v1)
+        h1 = weir_att_pad_profile.addGeometry(Part.LineSegment(Vector (0.1, 1.0, 0.0), Vector (10.0, 1.0, 0.0)))
+        horz(h1)
+        c(v1,h1)
+        v2 = weir_att_pad_profile.addGeometry(Part.LineSegment(Vector (10.0, 1.0, 0.0), Vector (10.0, 2.0, 0.0)))
+        vert(v2)
+        c(h1,v2)
+        h2 = weir_att_pad_profile.addGeometry(Part.LineSegment(Vector (10.0, 2.0, 0.0), Vector (0.1, 2.0, 0.0)))
+        horz(h2)
+        c(v2,h2)
+        v3 = weir_att_pad_profile.addGeometry(Part.LineSegment(Vector (0.1, 2.0, 0.0), Vector (0.1, 3.0, 0.0)))
+        vert(v3)
+        c(h2,v3)
+        h3 = weir_att_pad_profile.addGeometry(Part.LineSegment(Vector (0.1, 3.0, 0.0), Vector (1.0, 3.0, 0.0)))
+        horz(h3)
+        c(v3,h3)
+        v4 = weir_att_pad_profile.addGeometry(Part.LineSegment(Vector (1.0, 3.0, 0.0), Vector (1.0, 4.0, 0.0)))
+        vert(v4)
+        c(h3,v4)
+        h4 = weir_att_pad_profile.addGeometry(Part.LineSegment(Vector (1.0, 4.0, 0.0), Vector (0.1, 4.0, 0.0)))
+        horz(h4)
+        c(v4,h4)
+        v5 = weir_att_pad_profile.addGeometry(Part.LineSegment(Vector (0.1, 4.0, 0.0), Vector (0.1, 5.0, 0.0)))
+        vert(v5)
+        c(h4,v5)
+        h5 = weir_att_pad_profile.addGeometry(Part.LineSegment(Vector (0.1, 5.0, 0.0), Vector (5.0, 5.0, 0.0)))
+        horz(h5)
+        c(v5,h5)
+        v6 = weir_att_pad_profile.addGeometry(Part.LineSegment(Vector (5.0, 5.0, 0.0), Vector (5.0, 0.0, 0.0)))
+        vert(v6)
+        c(h5,v6)
+        h6 = weir_att_pad_profile.addGeometry(Part.LineSegment(Vector (5.0, 0.0, 0.0), Vector (1.0, 0.0, 0.0)))
+        horz(h6)
+        c(v6,h6)
+        c(h6,v1)
+        weir_att_pad_profile.addConstraint(Sketcher.Constraint('DistanceX', -2, 1, v1, 1, 1.0))
+        LastConstrainExp(weir_att_pad_profile,'Config.JunctionThickness')
+        weir_att_pad_profile.addConstraint(Sketcher.Constraint('DistanceX', -2, 1, v3, 1, 1.0))
+        LastConstrainExp(weir_att_pad_profile,'Config.JunctionThickness')
+        weir_att_pad_profile.addConstraint(Sketcher.Constraint('DistanceX', -2, 1, v5, 1, 1.0))
+        LastConstrainExp(weir_att_pad_profile,'Config.JunctionThickness')
+        weir_att_pad_profile.addConstraint(Sketcher.Constraint('DistanceX', -2, 1, v6, 1, 1.0))
+        LastConstrainExp(weir_att_pad_profile,'2 * Config.WeirFastenerOffset')
+        weir_att_pad_profile.addConstraint(Sketcher.Constraint('DistanceX', -2, 1, v2, 1, 1.0))
+        LastConstrainExp(weir_att_pad_profile,'Config.WeirFastenerOffset*2/3')
+        weir_att_pad_profile.addConstraint(Sketcher.Constraint('DistanceX', -2, 1, v4, 1, 1.0))
+        LastConstrainExp(weir_att_pad_profile,'Config.WeirFastenerOffset*2/3')
+        weir_att_pad_profile.addConstraint(Sketcher.Constraint('PointOnObject', h6, 1, -1))
+        weir_att_pad_profile.addConstraint(Sketcher.Constraint('DistanceY', -1, 1, v1, 2, 1.0))
+        LastConstrainExp(weir_att_pad_profile,'(2 * Config.WeirFastenerOffset - 2*Config.WeirWallThickness-Config.WeirFastenerDiameter)/2')
+        weir_att_pad_profile.addConstraint(Sketcher.Constraint('DistanceY', -1, 1, v3, 2, 1.0))
+        LastConstrainExp(weir_att_pad_profile,'(2 * Config.WeirFastenerOffset - 2*Config.WeirWallThickness-Config.WeirFastenerDiameter)/2+Config.WeirWallThickness+Config.WeirFastenerDiameter')
+        weir_att_pad_profile.addConstraint(Sketcher.Constraint('DistanceY', v2, 1, v2, 2, 1.0))
+        LastConstrainExp(weir_att_pad_profile,'Config.WeirWallThickness')
+        weir_att_pad_profile.addConstraint(Sketcher.Constraint('DistanceY', v4, 1, v4, 2, 1.0))
+        LastConstrainExp(weir_att_pad_profile,'Config.WeirWallThickness')
+        weir_att_pad_profile.addConstraint(Sketcher.Constraint('DistanceY', -1, 1, h5, 2, 1.0))
+        LastConstrainExp(weir_att_pad_profile,'2*Config.WeirFastenerOffset')
+        screw = weir_att_pad_profile.addGeometry(Part.Circle(Vector(1.0, 1.0, 0.0), Vector (0.0, 0.0, 1.0), 1.00))
+        weir_att_pad_profile.addConstraint(Sketcher.Constraint('Diameter', screw, 1.0))
+        LastConstrainExp(weir_att_pad_profile,'Config.WeirMountHoleDiameter')
+        weir_att_pad_profile.addConstraint(Sketcher.Constraint('DistanceX', -2, 1, screw, 3, 1.0))
+        LastConstrainExp(weir_att_pad_profile,'Config.WeirFastenerOffset')
+        weir_att_pad_profile.addConstraint(Sketcher.Constraint('DistanceY', -1, 1, screw, 3, 1.0))
+        LastConstrainExp(weir_att_pad_profile,'Config.WeirFastenerOffset')
+        weir_att_pad_profile.MapMode = 'FlatFace'
+        weir_att_pad_profile.Placement = placemnt
+        weir_att_pad_profile.Visibility = False
+        weir_att_pad_profile.ViewObject.Visibility = False
+        weir_att_pad = screw_pad.newObject('PartDesign::Pad', f'{name}_pad')
+        weir_att_pad.Direction = Vector(0.00, -1.00, -0.00)
+        weir_att_pad.setExpression('Length', 'Config.WeirWallThickness')
+        weir_att_pad.Length = 4.0
+        weir_att_pad.Placement = placemnt
+        weir_att_pad.Profile = (weir_att_pad_profile, [])
+        weir_att_pad.ReferenceAxis = (weir_att_pad_profile, ['N_Axis'])
+        weir_att_pad.ViewObject.ShapeColor = (0.20, 0.20, 0.20, 0.00)
+        #weir_att_pad.ViewObject.Visibility = False
+        return screw_pad
+    WeirAtt = make_screw_pad(grp, 'WeirAttachmentVertical')
+    af = Draft.make_ortho_array(WeirAtt, v_x=App.Vector(10, 0, 0), v_y=App.Vector(0, 10, 0), v_z=App.Vector(0, 0, 10), n_x=1, n_y=3, n_z=4, use_link=False)
+    af.Label='WeirAttachmentScrew'
+    af.setExpression('.IntervalY.y', '(Computed.WeirDepth-Config.JunctionThickness)/3')
+    af.setExpression('.IntervalZ.z', 'Computed.WeirVerticalFastenerHidth/(Config.WeirFastenerVerticalCount-1)')
+    af.setExpression('NumberZ', 'Config.WeirFastenerVerticalCount')
+    grp.addObject(af)
+    #place_fasteners(af)
+    afm = Draft.mirror(af, App.Vector(0.0, 0.0, 0.0), App.Vector(0.0, 10.0, 0.0))
+    afm.Label='WeirAttachmentScrewMirror'
+    afm.Normal = App.Vector(1.0,0.0,0.0)
+    grp.addObject(afm)
+    WeirAttKeel = doc.addObject('PartDesign::Body', 'WeirAttachmentVerticalKeel')
+    WeirAttKeel.Group = []
+    bk = WeirAttKeel.newObject('PartDesign::AdditiveBox', 'WeirAtKeel')
+    WeirAttKeel.setExpression('.Placement.Base.x', 'Computed.LeftCornerX+Computed.WeirMargin+Config.SidesGlassThickness+Config.JunctionThickness')
+    WeirAttKeel.setExpression('.Placement.Base.y', 'Computed.Length/2-Config.SidesGlassThickness-Computed.WeirDepth')
+    WeirAttKeel.setExpression('.Placement.Base.z', 'Computed.GlassLevel+Config.BottomGlassThickness+Config.BraceWidth+(2*Config.WeirFastenerOffset-2*Config.WeirWallThickness-Config.WeirFastenerDiameter)/2')
+    bk.setExpression('Length', '2*Config.WeirFastenerOffset-Config.JunctionThickness')
+    bk.setExpression('Width', '(Computed.WeirDepth-Config.JunctionThickness)*8/9')
+    bk.setExpression('Height', 'Config.WeirWallThickness')
+    WeirAttKeelHole = doc.addObject('Part::Cylinder', 'WeirAtKeelHole')
+    WeirAttKeelHole.setExpression('.Placement.Base.x', 'Computed.LeftCornerX+Computed.WeirMargin+Config.SidesGlassThickness+Config.JunctionThickness+3')
+    WeirAttKeelHole.setExpression('.Placement.Base.y', 'Computed.Length/2-Config.SidesGlassThickness-Computed.WeirDepth+2*Config.WeirWallThickness+4')
+    WeirAttKeelHole.setExpression('.Placement.Base.z', 'Computed.GlassLevel+Config.BottomGlassThickness+Config.BraceWidth+(2 * Config.WeirFastenerOffset - 2*Config.WeirWallThickness-Config.WeirFastenerDiameter)/2')
+    WeirAttKeelHoles = Draft.make_ortho_array(WeirAttKeelHole, v_x=App.Vector(10, 0, 0), v_y=App.Vector(0, 10, 0), v_z=App.Vector(0, 0, 10), n_x=1, n_y=8, n_z=1, use_link=False)
+    WeirAttKeelHoles.setExpression('.IntervalY.y', '(Computed.WeirDepth-Config.JunctionThickness)/3/3')
+    weir_k = doc.addObject("Part::Cut", "WeirAttachmentVerticalKeelSlotted")
+    weir_k.Base = WeirAttKeel
+    weir_k.Tool = doc.addObject('App::Part','WeirKeelCuts')
+    weir_k.Tool.Group = [WeirAttKeelHoles, af]
+    weir_k.Refine = True
+    weir_kp = Draft.make_ortho_array(weir_k, v_x=App.Vector(10, 0, 0), v_y=App.Vector(0, 10, 0), v_z=App.Vector(0, 0, 10), n_x=1, n_y=1, n_z=2, use_link=False)
+    weir_kp.Label='WeirAttachmentHolders'
+    weir_kp.setExpression('.IntervalZ.z', 'Config.WeirWallThickness+Config.WeirFastenerDiameter')
+    weir_kp.Visibility = False
+    weir_kv = Draft.make_ortho_array(weir_kp, v_x=App.Vector(10, 0, 0), v_y=App.Vector(0, 10, 0), v_z=App.Vector(0, 0, 10), n_x=1, n_y=1, n_z=4, use_link=False)
+    weir_kv.Label='WeirAttachmentHoldersSide'
+    weir_kv.setExpression('.IntervalZ.z', 'Computed.WeirVerticalFastenerHidth/(Config.WeirFastenerVerticalCount-1)')
+    weir_kv.setExpression('NumberZ', 'Config.WeirFastenerVerticalCount')
+    weir_kvm = Draft.mirror(weir_kv, App.Vector(0.0, 0.0, 0.0), App.Vector(0.0, 10.0, 0.0))
+    weir_kvm.Label='WeirAttachmentHolderMirror'
+    weir_kvm.Normal = App.Vector(1.0,0.0,0.0)
+    grp.addObject(weir_kvm)
+    WeirAttHorz = make_screw_pad(grp, 'WeirAttachmentHorizontal')
+    WeirAttHorz.Placement.Rotation.Axis = App.Vector(0.0, 1.0, 0.0)
+    WeirAttHorz.Placement.Rotation.Angle = -pi/2
+    afh = Draft.make_ortho_array(WeirAttHorz, v_x=App.Vector(10, 0, 0), v_y=App.Vector(0, 10, 0), v_z=App.Vector(0, 0, 10), n_x=2, n_y=1, n_z=1, use_link=False)
+    afh.Label='WeirAttachmentScrewHorizontal'
+    afh.setExpression('.IntervalX.x', 'Computed.WeirHorizontalFastenerHidth/(Config.WeirFastenerHorizontalCount-1)')
+    afh.setExpression('NumberX', 'Config.WeirFastenerHorizontalCount')
+    afh.setExpression('.Placement.Base.x', '2*Config.WeirFastenerOffset')
+    grp.addObject(afh)
+    WeirAttKeelHor = doc.addObject('PartDesign::Body', 'WeirAttachmentHorizontalKeel')
+    WeirAttKeelHor.Group = []
+    bk = WeirAttKeelHor.newObject('PartDesign::AdditiveBox', 'WeirAtKeelHorz')
+    WeirAttKeelHor.setExpression('.Placement.Base.x', 'Computed.LeftCornerX+Computed.WeirMargin+Config.SidesGlassThickness+(2 * Config.WeirFastenerOffset - 2*Config.WeirWallThickness-Config.WeirFastenerDiameter)/2')
+    WeirAttKeelHor.setExpression('.Placement.Base.y', 'Computed.Length/2-Config.SidesGlassThickness-Computed.WeirDepth')
+    WeirAttKeelHor.setExpression('.Placement.Base.z', 'Computed.GlassLevel+Config.BottomGlassThickness+Config.BraceWidth+Config.JunctionThickness-Config.SidesGlassThickness')
+    bk.setExpression('Length', 'Config.WeirWallThickness')
+    bk.setExpression('Width', '2*Config.SidesGlassThickness')
+    bk.setExpression('Height', '2*Config.WeirFastenerOffset-Config.JunctionThickness+Config.SidesGlassThickness')
+    glass_cut = doc.addObject('Part::Box', 'CutFromGlass')
+    glass_cut.setExpression('.Placement.Base.x', 'Computed.LeftCornerX+2*Config.SidesGlassThickness+Config.BraceWidth')
+    glass_cut.setExpression('.Placement.Base.y', 'Computed.Length/2-Config.SidesGlassThickness-Computed.WeirDepth')
+    glass_cut.setExpression('.Placement.Base.z', 'Computed.GlassLevel+Config.BottomGlassThickness+Config.JunctionThickness')
+    glass_cut.setExpression('Length', '2*Config.WeirFastenerOffset')
+    glass_cut.setExpression('Width', 'Config.SidesGlassThickness')
+    glass_cut.setExpression('Height', 'Config.BraceWidth')
+    weir_kh1 = doc.addObject("Part::Cut", "WeirAttachmentHorzSlotted1")
+    weir_kh1.Base = WeirAttKeelHor
+    weir_kh1.Tool = afh
+    weir_kh2 = doc.addObject("Part::Cut", "WeirAttachmentHorzSlotted2")
+    weir_kh2.Base = weir_kh1
+    weir_kh2.Tool = glass_cut
+    weir_kh2.Refine = True
+    weir_khh = Draft.make_ortho_array(weir_kh2, v_x=App.Vector(10, 0, 0), v_y=App.Vector(0, 10, 0), v_z=App.Vector(0, 0, 10), n_x=2, n_y=1, n_z=1, use_link=False)
+    weir_khh.Label='WeirAttachmentHoldersHorizontal'
+    weir_khh.setExpression('.IntervalX.x', 'Config.WeirWallThickness+Config.WeirFastenerDiameter')
+    weir_kp.Visibility = False
+    afh.Visibility = True
+    afhh = Draft.make_ortho_array(weir_khh, v_x=App.Vector(10, 0, 0), v_y=App.Vector(0, 10, 0), v_z=App.Vector(0, 0, 10), n_x=2, n_y=1, n_z=1, use_link=False)
+    afhh.Label='WeirAttachmentHoldersHorizontalLine'
+    afhh.setExpression('.IntervalX.x', 'Computed.WeirHorizontalFastenerHidth/(Config.WeirFastenerHorizontalCount-1)')
+    afhh.setExpression('NumberX', 'Config.WeirFastenerHorizontalCount')
+    #afhh.setExpression('.Placement.Base.x', '2*Config.WeirFastenerOffset')
+    grp.addObject(afh)
     fastener_vert_profile = doc.addObject('Sketcher::SketchObject', 'fastener_vert_profile')
-    geo0 = fastener_vert_profile.addGeometry(Part.Circle(Vector(1.0, 1.0, 0.0), Vector (0.0, 0.0, 1.0), 1.00))
+    geo0 = fastener_vert_profile.addGeometry(Part.Circle(Vector(0.1, 1.0, 0.0), Vector (0.0, 0.0, 1.0), 1.00))
     geo1 = fastener_vert_profile.addGeometry(Part.Circle(Vector(1.0, 1.0, 0.0), Vector (0.0, 0.0, 1.0), 1.00))
     fastener_vert_profile.addConstraint(Sketcher.Constraint('Diameter', geo0, 1.0))
     fastener_vert_profile.addConstraint(Sketcher.Constraint('Diameter', geo1, 1.0))

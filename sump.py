@@ -26,14 +26,8 @@ from FreeCAD import Vector, Placement, Rotation
 import Sketcher
 import Part, Arch, ArchCommands, Draft
 import FreeCAD as App
-from utils import glass_color, make_panel
+from utils import glass_color, make_panel, LastConstrainExp
 from holes import getHole, drill
-
-def LastConstrainExp(obj, exp):
-    n = len(obj.Constraints)-1
-    print(str(obj.Constraints))
-    print(f'SET Constraints[{n}] => {exp}')
-    obj.setExpression(f'Constraints[{n}]', exp)
 
 def sump_color(obj):
     obj.ViewObject.ShapeColor=(1.0, 1.0, 1.0)
@@ -280,9 +274,9 @@ def make_sump(doc):
     geo0 = weir_door_fastener.addGeometry(Part.Circle(Vector(1.0, 1.0, 0.0), Vector (0.0, 0.0, 1.0), 1.00))
     geo1 = weir_door_fastener.addGeometry(Part.Circle(Vector(1.0, 1.0, 0.0), Vector (0.0, 0.0, 1.0), 1.00))
     weir_door_fastener.addConstraint(Sketcher.Constraint('Diameter', geo0, 1.0))
-    LastConstrainExp(weir_door_fastener, 'Config.FugeWeirFastenerScrewDiameter')
+    LastConstrainExp(weir_door_fastener, 'Config.FugeMountHoleDiameter')
     weir_door_fastener.addConstraint(Sketcher.Constraint('Diameter', geo1, 1.0))
-    LastConstrainExp(weir_door_fastener, 'Config.FugeWeirFastenerScrewDiameter')
+    LastConstrainExp(weir_door_fastener, 'Config.FugeMountHoleDiameter')
     weir_door_fastener.addConstraint(Sketcher.Constraint('DistanceY', -1, 1, geo0, 3, 1.0))
     LastConstrainExp(weir_door_fastener, 'Config.SumpHeight - Config.SumpAcrylicThickness - Computed.FugeWeirHoleMargin')
     weir_door_fastener.addConstraint(Sketcher.Constraint('DistanceY', -1, 1, geo1, 3, 1.0))

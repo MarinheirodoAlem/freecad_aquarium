@@ -184,3 +184,8 @@ def make_supports(doc, baseOrPanel, grp_sup, name):
     grp_sup.addObject(sb)
     grp_sup.addObject(sup_length)
 
+def LastConstrainExp(obj, exp):
+    n = len(obj.Constraints)-1
+    print(str(obj.Constraints))
+    print(f'SET Constraints[{n}] => {exp}')
+    obj.setExpression(f'Constraints[{n}]', exp)
